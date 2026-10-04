@@ -4,13 +4,25 @@ Build one complete, explainable project at a time. Each release needs a working 
 
 ## Available
 
-- **Array Observatory — Java:** generic storage, geometric growth, indexed edits, immutable trace snapshots, costs, and actual source navigation.
+- **[Structure Workshop](../projects/structure-workshop/README.md) — Java:** five runnable labs, each with editable inputs, step descriptions, Play/Next/Back/Reset, and Java source alongside recorded execution.
+
+| Lab | Implemented concepts |
+| --- | --- |
+| Pair Playground | Generic `Pair<T>`, references, replacements, empty values, and swaps |
+| Array Observatory | Custom dynamic array, doubling growth, indexed edits, copies, and shifts; reuses the standalone engine |
+| Link Workshop | Custom doubly linked nodes, standard-library map lookup, and a standard-library undo stack |
+| Branch Explorer | First-child / next-sibling tree, a fixed linear-probing index, tombstones, preorder, and level order |
+| Dependency Workshop | Directed graph, custom indexed min-heap, topological ordering, and cycle-blocked states |
+
+These are independent labs covering the P0–P4 concept sequence, not completed school assignments. They do not cover every requirement of those assignments.
+
+- **[Array Observatory](../projects/array-observatory/README.md) — Java:** the original standalone application remains available, with growth policies, trace costs, and source navigation.
 
 ## Planned
 
 | Area | Language or stack | Demonstration |
 | --- | --- | --- |
-| Data structures and algorithms | Java | Sequences, hashing, trees, dependency ordering, compression, and algorithm comparisons |
+| Further data structures and algorithms | Java | Compression, algorithm comparisons, and extensions beyond the five available labs |
 | Systems | C, Unix | Scheduling, configurable floating-point formats, processes, signals, and pipes |
 | Reliable transport | Python, UDP | Sequence numbers, acknowledgments, loss, corruption, reordering, and retransmission |
 | Concurrency and operating systems | C; OS/161 where applicable | Locks, wait states, process lifecycle, and clearly distinguished simulations versus kernel work |

@@ -1,0 +1,7 @@
+import workshop.PairLab;
+class WrongPair {
+    void change() {
+        PairLab.Pair<Integer> pair = new PairLab.Pair<>(1, 2);
+        pair.setLeft("not an Integer");
+    }
+}
