@@ -1,0 +1,15 @@
+**/build/
+*.class
+*.log
+.DS_Store
+.env
+.env.*
+.idea/
+.vscode/
+work/
+private/
+coursework/
+*.pdf
+*.zip
+*.tar
+*.gz
