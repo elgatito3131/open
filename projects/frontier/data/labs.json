@@ -1,0 +1,86 @@
+[
+  {
+    "id": "urban-climate", "name": "Urban Climate Commons", "institution": "Alder Institute", "discipline": "Climate & Environment", "location": "Alder City · fictional",
+    "summary": "Studies how shade, building materials, and neighborhood design change street-level heat. The team connects temperature sensors with public-health surveys to understand unequal exposure during hot summers.",
+    "focus": "How can cities protect people from extreme heat without displacing residents?",
+    "topics": ["urban heat", "climate adaptation", "public health", "environmental justice"],
+    "methods": ["temperature sensors", "spatial analysis", "community interviews"]
+  },
+  {
+    "id": "coastal-water", "name": "Coastal Water Studio", "institution": "Alder Institute", "discipline": "Climate & Environment", "location": "Alder City · fictional",
+    "summary": "Builds small sensors for tracking salt and pollutants as rivers meet the ocean. Computer models connect rainfall and tides to drinking-water quality in coastal settlements.",
+    "focus": "Predicting where floodwater will contaminate freshwater supplies.",
+    "topics": ["water quality", "flooding", "coastal ecosystems", "sensors"],
+    "methods": ["hydrological simulation", "field sampling", "embedded sensing"]
+  },
+  {
+    "id": "accessible-robotics", "name": "Accessible Robotics Workshop", "institution": "Meridian College", "discipline": "Computing & Robotics", "location": "Meridian Bay · fictional",
+    "summary": "Designs affordable assistive robots that help people with limited mobility reach objects and navigate homes. Human-centered experiments combine computer vision, safe motion planning, and adjustable physical interfaces.",
+    "focus": "Robotic assistance that adapts to a person's daily routines and physical abilities.",
+    "topics": ["assistive robotics", "accessibility", "computer vision", "human robot interaction"],
+    "methods": ["motion planning", "prototype testing", "participatory design"]
+  },
+  {
+    "id": "trustworthy-ml", "name": "Trustworthy Models Group", "institution": "Meridian College", "discipline": "Computing & Robotics", "location": "Meridian Bay · fictional",
+    "summary": "Examines when machine-learning predictions fail for groups underrepresented in training data. Researchers build transparent evaluation tools for classifiers used in public services and study privacy-preserving learning.",
+    "focus": "Making prediction errors and dataset limitations understandable to affected communities.",
+    "topics": ["machine learning", "fairness", "privacy", "model evaluation"],
+    "methods": ["statistical auditing", "differential privacy", "explainable models"]
+  },
+  {
+    "id": "neural-recovery", "name": "Neural Recovery Lab", "institution": "Bracken University", "discipline": "Health & Biology", "location": "Bracken Hills · fictional",
+    "summary": "Investigates how nervous systems recover movement after injury. Wearable electrical sensors and interactive rehabilitation tasks reveal how practice changes coordination over time.",
+    "focus": "Measuring recovery during everyday movement rather than only during hospital visits.",
+    "topics": ["neuroscience", "rehabilitation", "wearable sensors", "motor learning"],
+    "methods": ["electromyography", "longitudinal studies", "signal processing"]
+  },
+  {
+    "id": "microbial-materials", "name": "Living Materials Collective", "institution": "Bracken University", "discipline": "Health & Biology", "location": "Bracken Hills · fictional",
+    "summary": "Explores how bacteria and fungi can grow useful biodegradable materials. The team studies microbial communities that turn agricultural waste into lightweight packaging and self-repairing surfaces.",
+    "focus": "Replacing difficult-to-recycle plastics with materials grown from renewable feedstocks.",
+    "topics": ["microbiology", "biodegradable materials", "circular economy", "fungi"],
+    "methods": ["fermentation", "microscopy", "mechanical testing"]
+  },
+  {
+    "id": "community-mobility", "name": "Community Mobility Exchange", "institution": "Alder Institute", "discipline": "Society & Policy", "location": "Alder City · fictional",
+    "summary": "Studies how bus schedules, housing costs, and job locations shape people's daily travel. Researchers combine transit-network models with resident diaries to identify transportation barriers.",
+    "focus": "Making everyday trips to work, school, and healthcare easier without requiring a car.",
+    "topics": ["public transit", "urban planning", "transportation equity", "housing"],
+    "methods": ["network analysis", "travel diaries", "policy evaluation"]
+  },
+  {
+    "id": "collective-learning", "name": "Collective Learning Observatory", "institution": "Meridian College", "discipline": "Society & Policy", "location": "Meridian Bay · fictional",
+    "summary": "Investigates how people teach one another in online communities. Experiments compare peer feedback, visual explanations, and collaborative problem solving across languages and age groups.",
+    "focus": "Understanding which kinds of feedback help a learner transfer a skill to a new problem.",
+    "topics": ["learning science", "online communities", "collaboration", "education"],
+    "methods": ["controlled experiments", "conversation analysis", "learning analytics"]
+  },
+  {
+    "id": "battery-circularity", "name": "Battery Circularity Foundry", "institution": "Bracken University", "discipline": "Energy & Materials", "location": "Bracken Hills · fictional",
+    "summary": "Develops methods for recovering valuable metals from used rechargeable batteries. Electrochemical experiments connect material degradation to repair, reuse, and low-energy recycling processes.",
+    "focus": "Keeping battery materials useful through multiple cycles of manufacturing and recovery.",
+    "topics": ["batteries", "recycling", "energy storage", "electrochemistry"],
+    "methods": ["electrochemical testing", "life cycle analysis", "materials characterization"]
+  },
+  {
+    "id": "resilient-grids", "name": "Resilient Grids Lab", "institution": "Meridian College", "discipline": "Energy & Materials", "location": "Meridian Bay · fictional",
+    "summary": "Studies how neighborhoods can share solar electricity and stay powered during outages. Simulations coordinate batteries and flexible demand while measuring the effects on cost and reliability.",
+    "focus": "Helping local energy networks recover when storms interrupt the larger electrical grid.",
+    "topics": ["microgrids", "renewable energy", "resilience", "distributed control"],
+    "methods": ["optimization", "power flow simulation", "control systems"]
+  },
+  {
+    "id": "sound-memory", "name": "Sound and Memory Archive", "institution": "Alder Institute", "discipline": "Culture & Design", "location": "Alder City · fictional",
+    "summary": "Explores how sounds preserve memories of changing places. Oral histories, acoustic recordings, and interactive maps let communities describe cultural experiences that are missing from written archives.",
+    "focus": "Designing digital archives that preserve context and community ownership.",
+    "topics": ["digital humanities", "sound", "memory", "cultural heritage"],
+    "methods": ["oral history", "audio analysis", "interactive mapping"]
+  },
+  {
+    "id": "tangible-information", "name": "Tangible Information Studio", "institution": "Bracken University", "discipline": "Culture & Design", "location": "Bracken Hills · fictional",
+    "summary": "Turns complex data into objects and interactive exhibits people can explore by touch. Designers study how physical interfaces communicate uncertainty and make information accessible beyond visual charts.",
+    "focus": "Making scientific explanations useful to people with different sensory abilities.",
+    "topics": ["data visualization", "accessibility", "physical computing", "science communication"],
+    "methods": ["physical prototyping", "usability studies", "participatory design"]
+  }
+]

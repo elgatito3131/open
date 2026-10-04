@@ -21,12 +21,20 @@ Requires a JDK supporting Java 17 or later and a POSIX shell. Open <http://127.0
 | --- | --- | --- |
 | [Data Structures Workshop](projects/structure-workshop/README.md) | Java | Runnable; five labs covering generics, arrays, linked lists, trees, hashing, graphs, and heaps |
 | [Array Observatory](projects/array-observatory/README.md) | Java | Original standalone array experiment, preserved on port 4196 |
+| [Dwello](projects/dwello/README.md) | React, Node.js, PostgreSQL | Property ledger with persisted leases, receipts, a building view, and request/source playback |
+| [Frontier](projects/frontier/README.md) | Next.js, Python, PostgreSQL, pgvector | Fictional research discovery with keyword/semantic search and visible retrieval/source traces |
 
 The labs cover concepts associated with a P0–P4 data-structures sequence. They are independent implementations and examples, not complete school assignments. The workshop documentation identifies which structures are custom and which use Java's standard library.
 
 ![Data Structures Workshop](projects/structure-workshop/docs/preview.png)
 
 The original Array Observatory interface remains available in its own project directory.
+
+## Two full-stack applications
+
+**Dwello** turns a fictional building into a working property ledger. Select a unit, create a lease, record a receipt, and follow the actual transaction. **Frontier** explores twelve fictional research labs using a local embedding model and pgvector; compare search modes and inspect the ranking code.
+
+Both are original learning rebuilds. They use real local PostgreSQL storage and synthetic records; neither is a recovery of private business code or evidence of earlier venture claims. Their READMEs explain setup, limitations, and independent learning exercises. The shared [PostgreSQL helper](scripts/postgres.sh) creates an isolated password-protected cluster without enabling a system service.
 
 The [roadmap](docs/roadmap.md) describes future work. Planned projects are not completed implementations.
 
@@ -38,7 +46,7 @@ Original coursework, instructor scaffolds, assignment specifications, private st
 
 ## Checks
 
-The GitHub workflow compiles and checks both Java projects with Java 17 and 21. Run the same project checks locally with `./test.sh` inside each project directory. Checks include algorithm behavior, invariants, immutable snapshots, source references, and generic type safety. A successful new implementation does not establish historical deployment, customer, institutional, or contribution claims.
+The Java workflow compiles and checks both Java projects with Java 17 and 21. The product workflow tests Dwello and Frontier against PostgreSQL with pgvector, evaluates fixed semantic-search examples, and builds both frontends. See each project's README for local commands. Checks cover behavior, database invariants, source references, and failure handling. A successful new implementation does not establish historical deployment, customer, institutional, or contribution claims.
 
 ## License
 

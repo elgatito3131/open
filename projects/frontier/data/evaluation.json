@@ -1,0 +1,8 @@
+[
+  {"query": "How can neighborhoods stay cool during hot summers?", "expected_in_top_3": "urban-climate"},
+  {"query": "Robots that help people move around their homes", "expected_in_top_3": "accessible-robotics"},
+  {"query": "Recovering metals from old batteries", "expected_in_top_3": "battery-circularity"},
+  {"query": "Helping people regain movement after a nervous system injury", "expected_in_top_3": "neural-recovery"},
+  {"query": "Solar power during a neighborhood electricity outage", "expected_in_top_3": "resilient-grids"},
+  {"query": "Preserving community memories with recorded sound", "expected_in_top_3": "sound-memory"}
+]

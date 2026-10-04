@@ -13,3 +13,12 @@ coursework/
 *.zip
 *.tar
 *.gz
+**/node_modules/
+**/.next/
+**/dist/
+**/.venv/
+**/.cache/
+**/__pycache__/
+**/.pytest_cache/
+**/*.tsbuildinfo
+.runtime/

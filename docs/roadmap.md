@@ -18,6 +18,13 @@ These are independent labs covering the P0–P4 concept sequence, not completed 
 
 - **[Array Observatory](../projects/array-observatory/README.md) — Java:** the original standalone application remains available, with growth policies, trace costs, and source navigation.
 
+## Product applications
+
+Dwello and Frontier now have original local implementations:
+
+- **[Dwello](../projects/dwello/README.md):** React, Node/Express, PostgreSQL. A fictional property ledger with atomic tenant/lease creation, receipt recording, database constraints, and request/source playback. Authentication, payment processing, and deployment remain future work.
+- **[Frontier](../projects/frontier/README.md):** Next.js, Python/FastAPI, PostgreSQL and pgvector. Twelve fictional lab profiles, keyword and MiniLM semantic search, filters, profiles, and retrieval/source playback. Local PostgreSQL is the tested database; Supabase cloud services, ingestion, and production authorization remain future work.
+
 ## Planned
 
 | Area | Language or stack | Demonstration |
@@ -29,8 +36,8 @@ These are independent labs covering the P0–P4 concept sequence, not completed 
 | Databases | Oracle SQL, Java JDBC, MongoDB | A fictional domain with schemas, imports, queries, and data-flow views |
 | Local cryptography and PKI lab | Stack to confirm; Java for recovered TLS activity | Signing, verification, certificate chains, and local HTTPS |
 | Atlas / Project Studio public edition | HTML, CSS, JavaScript; local Python host | Portable learning tools, public source pointers, and new examples |
-| Dwello demonstration | React, Node.js, PostgreSQL, REST | Fictional property-management flows and visible relationships |
-| Frontier demonstration | Next.js, Python, Supabase/PostgreSQL, embeddings, pgvector | Research discovery, ranking, and source traceability |
+| Dwello extensions | React, Node.js, PostgreSQL, REST | Tenant reuse and renewals, additional ledger operations, authentication |
+| Frontier extensions | Next.js, Python, Supabase/PostgreSQL, embeddings, pgvector | Real public source ingestion, larger retrieval evaluation, deployment |
 | Document retrieval | Python, FastAPI, Hugging Face, FAISS, Llama 2 | Ingestion, retrieval, citations, and evaluation |
 | Contextual help overlay | Electron, React, TypeScript, macOS Accessibility APIs | A bounded application walkthrough from UI structure to guidance |
 
