@@ -4,15 +4,15 @@ Build one complete, explainable project at a time. Each release needs a working 
 
 ## Available
 
-- **[Structure Workshop](../projects/structure-workshop/README.md) — Java:** five runnable labs, each with editable inputs, step descriptions, Play/Next/Back/Reset, and Java source alongside recorded execution.
+- **[Data Structures Workshop](../projects/structure-workshop/README.md) — Java:** five runnable labs, each with editable inputs, step descriptions, Play/Next/Back/Reset, and Java source alongside recorded execution.
 
 | Lab | Implemented concepts |
 | --- | --- |
-| Pair Playground | Generic `Pair<T>`, references, replacements, empty values, and swaps |
-| Array Observatory | Custom dynamic array, doubling growth, indexed edits, copies, and shifts; reuses the standalone engine |
-| Link Workshop | Custom doubly linked nodes, standard-library map lookup, and a standard-library undo stack |
-| Branch Explorer | First-child / next-sibling tree, a fixed linear-probing index, tombstones, preorder, and level order |
-| Dependency Workshop | Directed graph, custom indexed min-heap, topological ordering, and cycle-blocked states |
+| Generic Pair | Generic `Pair<T>`, references, replacements, empty values, and swaps |
+| Array List | Custom dynamic array, doubling growth, indexed edits, copies, and shifts; reuses the standalone engine |
+| Doubly Linked List | Custom doubly linked nodes, standard-library map lookup, and a standard-library undo stack |
+| Tree & Hash Table | First-child / next-sibling tree, a fixed linear-probing index, tombstones, preorder, and level order |
+| Topological Sort | Directed graph, custom indexed min-heap, topological ordering, and cycle-blocked states |
 
 These are independent labs covering the P0–P4 concept sequence, not completed school assignments. They do not cover every requirement of those assignments.
 

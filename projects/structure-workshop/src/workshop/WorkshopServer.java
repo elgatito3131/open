@@ -24,15 +24,15 @@ public final class WorkshopServer {
     private final Map<String,Map<String,Integer>> lines = new LinkedHashMap<>();
 
     public static final List<Map<String,String>> LABS = List.of(
-        lab("pair", "Pair Playground", "Generic values and references", "PairLab.java", "Initial pair", "12,27",
+        lab("pair", "Generic Pair", "Generics, references, and swapping", "PairLab.java", "Initial pair", "12,27",
             "swap\nleft 8\nclear right\nright 42", "left VALUE · right VALUE · swap · clear left/right. Use two integers, or _ for an empty side."),
-        lab("array", "Array Observatory", "Dynamic arrays", "DynamicBuffer.java", "Initial values", "12,27,41",
+        lab("array", "Array List", "Resizable array, inserts, and removals", "DynamicBuffer.java", "Initial values", "12,27,41",
             "append 8\ninsert 1 24\nremove 2\nset 0 9", "append VALUE · insert INDEX VALUE · remove INDEX · set INDEX VALUE. Indexes start at 0."),
-        lab("link", "Link Workshop", "Linked lists, undo, and lookup", "LinkLab.java", "Initial node names", "fern,moss,reed",
+        lab("link", "Doubly Linked List", "Previous/next pointers, undo, and lookup", "LinkLab.java", "Initial node names", "fern,moss,reed",
             "insert-after moss ivy\nremove fern\nfind reed\nundo", "insert-after EXISTING NEW · prepend NEW · remove NAME · find NAME · undo"),
-        lab("branch", "Branch Explorer", "Trees and a probing index", "BranchLab.java", "Root name", "grove",
+        lab("branch", "Tree & Hash Table", "First-child/next-sibling tree and hash index", "BranchLab.java", "Root name", "grove",
             "add grove fern\nadd grove iris\nadd fern moss\nfind moss\npreorder\nlevelorder", "add PARENT CHILD · find NAME · remove-leaf NAME · preorder · levelorder"),
-        lab("dependency", "Dependency Workshop", "Graphs, indexed heaps, and ordering", "DependencyLab.java", "Initial tasks", "sketch,cut,assemble,paint",
+        lab("dependency", "Topological Sort", "Directed graph, indexed min-heap, and ordering", "DependencyLab.java", "Initial tasks", "sketch,cut,assemble,paint",
             "link sketch cut\nlink cut assemble\nlink assemble paint\norder", "link BEFORE AFTER · order. A dependency goes from the prerequisite to the task that needs it.")
     );
     private static Map<String,String> lab(String id,String title,String subtitle,String file,String label,String initial,String operations,String help) {
@@ -67,7 +67,7 @@ public final class WorkshopServer {
         server.setExecutor(Executors.newFixedThreadPool(4));
         Runtime.getRuntime().addShutdownHook(new Thread(()->server.stop(0)));
         server.start();
-        System.out.println("Structure Workshop is ready at http://127.0.0.1:"+PORT+"/?lab=link");
+        System.out.println("Data Structures Workshop is ready at http://127.0.0.1:"+PORT+"/?lab=link");
         System.out.println("Press Ctrl+C to stop. Java performs all operations locally.");
     }
     private void handle(HttpExchange exchange) throws IOException {

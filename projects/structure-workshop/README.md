@@ -1,8 +1,8 @@
-# Structure Workshop
+# Data Structures Workshop
 
 Five small Java experiments in one simple 90s desktop interface. Edit the initial values and instructions, then watch the program change its data structures. **Show code** places the actual Java source beside the visualization and highlights the line associated with the current step.
 
-![A linked-list insertion in Structure Workshop](docs/preview.png)
+![Doubly Linked List in Data Structures Workshop](docs/preview.png)
 
 ## Run
 
@@ -28,7 +28,7 @@ Choose a project, edit its **initial values** and **instructions**, and read the
 - **Reset:** return to the initial state, keeping your inputs.
 - **Show code / Hide code:** open or close the Java source beside the visualization.
 
-Java executes the instructions and creates immutable snapshots. The browser draws those snapshots; it does not implement a second version of the algorithms. Back replays an earlier snapshot, while the Link Workshop's `undo` instruction is a real operation on its edit history. Steps mark selected assignments and algorithm actions, not every JVM instruction. Restart the server after editing Java so the compiled code and displayed source stay together.
+Java executes the instructions and creates immutable snapshots. The browser draws those snapshots; it does not implement a second version of the algorithms. Back replays an earlier snapshot, while the Doubly Linked List's `undo` instruction is a real operation on its edit history. Steps mark selected assignments and algorithm actions, not every JVM instruction. Restart the server after editing Java so the compiled code and displayed source stay together.
 
 ## The five labs
 
@@ -36,11 +36,11 @@ The P0–P4 column maps general concepts from a data-structures learning sequenc
 
 | Concepts | Lab | What the Java implementation does |
 | --- | --- | --- |
-| P0: generics and references | **Pair Playground** (`?lab=pair`) | `Pair<T>` stores two typed references. Watch replacements, empty values, and a swap's temporary reference. The browser uses integers; Java tests also use strings. Generic type checking happens at compile time, separately from input parsing. |
-| P1: dynamic arrays | **Array Observatory** (`?lab=array`) | Reuses the sibling project's custom `DynamicBuffer`, with doubling growth, indexed edits, copies, and shifts. |
-| P2: linked lists, stacks, maps | **Link Workshop** (`?lab=link`) | Custom doubly linked nodes expose each pointer change. Java's `LinkedHashMap` provides name lookup; `ArrayDeque` provides the undo stack. Their internal implementations are not visualized. |
-| P3: trees and hashing | **Branch Explorer** (`?lab=branch`) | A custom first-child / next-sibling tree has a fixed 32-slot linear-probing index. See collisions, wraparound, tombstones, preorder, and level-order traversal. |
-| P4: graphs and heaps | **Dependency Workshop** (`?lab=dependency`) | A directed adjacency matrix and custom indexed binary min-heap produce a topological order. Heap keys are remaining indegrees, with task names breaking ties. |
+| P0: generics and references | **Generic Pair** (`?lab=pair`) | `Pair<T>` stores two typed references. Watch replacements, empty values, and a swap's temporary reference. The browser uses integers; Java tests also use strings. Generic type checking happens at compile time, separately from input parsing. |
+| P1: dynamic arrays | **Array List** (`?lab=array`) | Reuses the sibling project's custom `DynamicBuffer`, with doubling growth, indexed edits, copies, and shifts. |
+| P2: linked lists, stacks, maps | **Doubly Linked List** (`?lab=link`) | Custom doubly linked nodes expose each pointer change. Java's `LinkedHashMap` provides name lookup; `ArrayDeque` provides the undo stack. Their internal implementations are not visualized. |
+| P3: trees and hashing | **Tree & Hash Table** (`?lab=branch`) | A custom first-child / next-sibling tree has a fixed 32-slot linear-probing index. See collisions, wraparound, tombstones, preorder, and level-order traversal. |
+| P4: graphs and heaps | **Topological Sort** (`?lab=dependency`) | A directed adjacency matrix and custom indexed binary min-heap produce a topological order. Heap keys are remaining indegrees, with task names breaking ties. |
 
 ## Inputs
 

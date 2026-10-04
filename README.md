@@ -2,11 +2,11 @@
 
 Small, runnable software projects with visible internals. Build an understanding of the program by following its execution and reading the source alongside it.
 
-## Start here: Structure Workshop
+## Start here: Data Structures Workshop
 
-Five Java experiments share a simple 90s desktop interface: **Pair Playground, Array Observatory, Link Workshop, Branch Explorer, and Dependency Workshop**. Edit the initial values and instructions, then use **Play, Next, Back, and Reset** to follow the program. **Show code** opens the actual Java source beside the visualization and highlights the line behind each recorded step.
+Five Java experiments share a simple 90s desktop interface: **Generic Pair, Array List, Doubly Linked List, Tree & Hash Table, and Topological Sort**. Edit the initial values and instructions, then use **Play, Next, Back, and Reset** to follow the program. **Show code** opens the actual Java source beside the visualization and highlights the line behind each recorded step.
 
-Clone the whole repository: Structure Workshop reuses Array Observatory's Java engine from its sibling directory.
+Clone the whole repository: Data Structures Workshop reuses Array Observatory's Java engine from its sibling directory.
 
 ```sh
 git clone https://github.com/elgatito3131/open.git
@@ -19,12 +19,12 @@ Requires a JDK supporting Java 17 or later and a POSIX shell. Open <http://127.0
 
 | Project | Core language | Status |
 | --- | --- | --- |
-| [Structure Workshop](projects/structure-workshop/README.md) | Java | Runnable; five labs covering generics, arrays, linked lists, trees, hashing, graphs, and heaps |
+| [Data Structures Workshop](projects/structure-workshop/README.md) | Java | Runnable; five labs covering generics, arrays, linked lists, trees, hashing, graphs, and heaps |
 | [Array Observatory](projects/array-observatory/README.md) | Java | Original standalone array experiment, preserved on port 4196 |
 
 The labs cover concepts associated with a P0–P4 data-structures sequence. They are independent implementations and examples, not complete school assignments. The workshop documentation identifies which structures are custom and which use Java's standard library.
 
-![Structure Workshop](projects/structure-workshop/docs/preview.png)
+![Data Structures Workshop](projects/structure-workshop/docs/preview.png)
 
 The original Array Observatory interface remains available in its own project directory.
 
