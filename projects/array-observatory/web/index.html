@@ -4,102 +4,62 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#008080">
-  <meta name="description" content="A desktop-style Java array workbench. Build an original generic array, step through real execution, and inspect its source.">
+  <meta name="description" content="Step through a Java dynamic array. Edit a sequence, watch it run, and show the source when you need it.">
   <title>Array Observatory</title>
   <link rel="stylesheet" href="/styles.css">
   <script src="/app.js" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to workspace</a>
+  <a class="skip-link" href="#main">Skip to experiment</a>
   <div class="app-shell">
     <header class="title-bar">
-      <div class="window-title"><span class="app-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span><strong>Array Observatory</strong><span class="title-document"> — Untitled sequence</span></div>
-      <div class="window-controls"><button id="title-help" type="button" aria-label="About Array Observatory" title="About Array Observatory">?</button><button id="window-maximize" type="button" aria-label="Maximize application window" title="Maximize application window"><span aria-hidden="true">□</span></button></div>
+      <div class="window-title"><span class="app-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span><h1>Array Observatory</h1></div>
+      <button id="title-help" type="button" aria-label="About Array Observatory" title="About Array Observatory">?</button>
     </header>
 
-    <div class="menu-bar" aria-label="Application menus">
-      <details class="app-menu"><summary><u>F</u>ile</summary><div class="menu-popup"><button id="menu-new" type="button">New empty sequence</button><button id="menu-example" type="button">Load example sequence</button><div class="menu-separator"></div><button id="menu-run" type="button">Run in Java <span>Ctrl+Enter</span></button></div></details>
-      <details class="app-menu"><summary><u>V</u>iew</summary><div class="menu-popup"><button data-mode="build" type="button">Build the project</button><button data-mode="follow" type="button">Follow execution</button><button data-mode="source" type="button">Read the source</button></div></details>
-      <details class="app-menu"><summary><u>T</u>race</summary><div class="menu-popup"><button id="menu-first" type="button">First frame</button><button id="menu-last" type="button">Last frame</button><button id="menu-source" type="button">Source of current frame</button></div></details>
-      <details class="app-menu"><summary><u>H</u>elp</summary><div class="menu-popup"><button data-mode="build" type="button">Project manual</button><div class="menu-separator"></div><button id="about-button" type="button">About Array Observatory…</button></div></details>
-      <span class="menu-caption">JAVA ARRAY WORKBENCH</span>
-    </div>
-
-    <div class="tool-bar">
-      <nav class="mode-nav" aria-label="Project views">
-        <button class="mode-button" data-mode="build" type="button"><span class="toolbar-icon" aria-hidden="true">▤</span><span>Build the project</span></button>
-        <button class="mode-button active" data-mode="follow" type="button" aria-current="page"><span class="toolbar-icon execution-icon" aria-hidden="true">▦</span><span>Follow execution</span></button>
-        <button class="mode-button" data-mode="source" type="button"><span class="toolbar-icon source-icon" aria-hidden="true">{ }</span><span>Read the source</span></button>
-      </nav>
-      <span class="toolbar-separator" aria-hidden="true"></span>
-      <button id="run" class="run-button" type="button" title="Run the current sequence in Java (Ctrl+Enter)">Run in Java <span aria-hidden="true">▶</span></button>
-      <button id="toolbar-example" type="button" class="toolbar-small" title="Load the example sequence">Load example</button>
-    </div>
-
     <main id="main" tabindex="-1">
-      <section id="view-follow" class="view" aria-labelledby="follow-title">
-        <h1 id="follow-title" class="sr-only">Follow execution</h1>
-        <div class="workspace-grid">
-          <aside class="instruction-panel" aria-labelledby="instructions-title">
-            <div class="pane-heading"><h2 id="instructions-title">Sequence editor</h2><span>INTEGER</span></div>
-            <div class="sequence-fields">
-              <label class="field-label" for="scenario">Example:</label>
-              <select id="scenario"><option value="mixed">Mixed operations</option><option value="grow">Growing a full array</option><option value="insert">Insert in the middle</option><option value="remove">Remove and close a gap</option></select>
-              <div class="field-row"><label class="field-label" for="initial">Initial values:</label><input id="initial" value="12, 27, 41" spellcheck="false" autocomplete="off"><span class="field-help">Comma-separated integers. Maximum 16.</span></div>
-              <fieldset class="growth-field"><legend>Growth policy</legend><div class="growth-options"><label><input type="radio" name="growth" value="double" checked><span>Double <small>(×2)</small></span></label><label><input type="radio" name="growth" value="balanced"><span>Balanced <small>(+½)</small></span></label></div></fieldset>
-              <div class="editor-heading"><label class="field-label" for="operations">Instructions:</label><span id="operation-count">4 operations</span></div>
-              <textarea id="operations" rows="5" spellcheck="false" aria-describedby="operation-help">append 8
+      <div id="workspace" class="workspace-grid">
+        <aside class="instruction-panel" aria-labelledby="instructions-title">
+          <div class="pane-heading"><h2 id="instructions-title">Instructions</h2></div>
+          <div class="sequence-fields">
+            <label class="field-label" for="initial">Initial values</label>
+            <input id="initial" value="12, 27, 41" spellcheck="false" autocomplete="off" aria-describedby="initial-help">
+            <p id="initial-help" class="field-help">Integers separated by commas.</p>
+            <label class="field-label operations-label" for="operations">Sequence</label>
+            <textarea id="operations" rows="7" spellcheck="false" aria-describedby="operation-help">append 8
 insert 1 24
 remove 2
 set 0 9</textarea>
-              <p class="field-help" id="operation-help">One per line. Indexes start at 0. Maximum 32.</p>
-              <details class="command-details"><summary>Insert instruction…</summary><div class="command-builder"><label><span class="field-label">Action</span><select id="command-action"><option value="append">Append</option><option value="insert">Insert</option><option value="remove">Remove</option><option value="set">Set</option></select></label><label id="command-index-label" hidden><span class="field-label">Index</span><input id="command-index" type="number" step="1" min="0" value="1"></label><label id="command-value-label"><span class="field-label">Value</span><input id="command-value" type="number" step="1" value="18"></label><button id="add-command" class="secondary-button" type="button">Insert into sequence</button></div></details>
-              <div id="run-status" class="run-status" role="status">Ready.</div>
-              <div id="error-message" class="error-message" role="alert" hidden></div>
-            </div>
-            <section class="queue-section" aria-labelledby="queue-title"><div class="queue-heading"><h3 id="queue-title">Operation list</h3><span id="queue-status">Awaiting run</span></div><ol id="operation-queue" class="operation-queue"></ol><p id="queue-empty" class="field-help">Run a sequence to populate the list.</p></section>
-          </aside>
-
-          <div class="execution-column">
-            <section class="memory-panel" aria-labelledby="memory-title">
-              <div class="pane-heading"><h2 id="memory-title">Array memory</h2><span id="phase-tag" class="phase-tag">Ready</span></div>
-              <div class="memory-legend"><span><i class="legend-fill"></i>Value</span><span><i class="legend-empty"></i>Unused</span><span><i class="legend-active"></i>Active</span><span class="snapshot-label">Java execution snapshot</span></div>
-              <div class="memory-view">
-                <div id="memory-empty" class="memory-empty"><span class="empty-glyph" aria-hidden="true">[ &nbsp; ]</span><p>Waiting for Java…</p><small>Run a sequence to inspect the backing array.</small></div>
-                <div id="array-container" class="array-container" hidden></div>
-                <div id="old-buffer" class="old-buffer" hidden><div class="buffer-label"><span>Previous buffer</span><span>Copy source</span></div><div id="old-slots" class="array-slots old-slots"></div></div>
-              </div>
-              <div class="capacity-area"><div class="capacity-label"><span>Logical size: <b id="used-label">—</b></span><span>Capacity: <b id="capacity-label">—</b></span></div><div class="capacity-track" role="meter" aria-label="Array capacity used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="capacity-meter"><div id="capacity-fill"></div></div><p id="capacity-caption">Size counts values. Capacity counts all allocated slots.</p></div>
-            </section>
-
-            <section class="step-panel" aria-labelledby="step-title">
-              <div class="pane-heading"><h2>Trace player</h2><span class="step-number" id="step-counter">00 / 00</span></div>
-              <div class="playback"><button id="previous" class="icon-button" type="button" aria-label="Previous execution step" title="Previous frame" disabled>◀</button><button id="play" class="play-button" type="button" disabled><span aria-hidden="true">▶</span> Play trace</button><button id="next" class="icon-button" type="button" aria-label="Next execution step" title="Next frame" disabled>▶</button><div class="timeline-wrap"><label class="sr-only" for="timeline">Execution step</label><input id="timeline" type="range" min="0" max="0" value="0" disabled><div class="timeline-labels"><span>START</span><span>END</span></div></div></div>
-              <div class="step-heading"><h2 id="step-title">Before execution</h2><span id="operation-label" class="operation-label">—</span></div>
-              <p id="step-message" class="step-message" aria-live="polite">Enter your instructions and select Run in Java.</p>
-              <div class="trace-links"><details class="why-details"><summary>Step notes</summary><p id="step-explanation">The browser displays snapshots returned by the Java program. Array operations run in Java.</p></details><button class="source-jump" id="source-jump" type="button" disabled><span aria-hidden="true">↗</span> <span id="source-reference">View source of this frame</span></button></div>
-            </section>
-
-            <section class="metrics-panel" aria-label="Cumulative execution costs"><span class="inspector-label">Counters:</span><div class="metric" title="Explicit user value assignments"><span class="metric-name">Writes</span><strong id="metric-writes">0</strong></div><div class="metric" title="Values copied to a larger array"><span class="metric-name">Copies</span><strong id="metric-copies">0</strong></div><div class="metric" title="Values shifted within the same array"><span class="metric-name">Shifts</span><strong id="metric-shifts">0</strong></div><div class="metric" title="Replacement arrays allocated during growth"><span class="metric-name">Allocations</span><strong id="metric-allocations">0</strong></div></section>
-            <p class="workspace-note">Cumulative through the selected frame. Initial storage is excluded.</p>
+            <div id="operation-help" class="syntax-help"><p>One instruction per line. Indexes start at 0.</p><code>append value<br>insert index value<br>remove index<br>set index value</code></div>
+            <div id="run-status" class="run-status" role="status">Press Play or Next to begin.</div>
+            <div id="error-message" class="error-message" role="alert" hidden></div>
           </div>
-        </div>
-      </section>
+          <section class="queue-section" aria-labelledby="queue-title"><h3 id="queue-title">Operation list</h3><ol id="operation-queue" class="operation-queue"></ol><p id="queue-empty" class="field-help">The current sequence will appear here.</p></section>
+        </aside>
 
-      <section id="view-build" class="view" aria-labelledby="build-title" hidden>
-        <div class="document-bar"><h1 id="build-title">Array Observatory Help</h1><div class="build-progress"><span id="build-progress">0 of 4 explored</span><div id="build-progress-track"><i></i></div></div></div>
-        <div class="build-layout"><nav class="stage-nav" aria-label="Build stages"><div class="help-tree-title">Contents</div><button data-stage="0" class="stage-button active" type="button"><span>1.</span><div><strong>Storage and invariants</strong><small>The generic backing array</small></div></button><button data-stage="1" class="stage-button" type="button"><span>2.</span><div><strong>Operations and growth</strong><small>Make room; close gaps</small></div></button><button data-stage="2" class="stage-button" type="button"><span>3.</span><div><strong>Execution snapshots</strong><small>Trace mutations and costs</small></div></button><button data-stage="3" class="stage-button" type="button"><span>4.</span><div><strong>Connect the interface</strong><small>Java HTTP and browser</small></div></button><p class="help-tree-note">Select a chapter.<br>Read the implementation.<br>Test your prediction.</p><button data-mode="follow" type="button" class="help-run-button">Open experiment</button></nav>
-          <article class="stage-content"><div class="stage-top"><span class="eyebrow" id="stage-kicker">STAGE 01 / STORAGE</span><span class="file-chip" id="stage-file">DynamicBuffer.java</span></div><h2 id="stage-title">Separate what exists from what is available.</h2><p class="stage-lead" id="stage-lead"></p><div class="stage-diagram" id="stage-diagram"></div><div class="build-columns"><div><h3>Implementation</h3><p id="stage-goal"></p></div><div><h3>Invariant</h3><p id="stage-invariant"></p></div></div><div class="exercise-box"><div class="exercise-label">CHECK YOUR UNDERSTANDING</div><p id="exercise-question"></p><div class="exercise-choices" id="exercise-choices"></div><p id="exercise-feedback" aria-live="polite"></p></div><div class="stage-actions"><button id="stage-source" type="button" class="secondary-button">Read Java source</button><button id="stage-next" type="button" class="dark-button">Next chapter &gt;</button></div></article></div>
-      </section>
+        <section class="execution-column" aria-label="Array execution">
+          <div class="memory-panel">
+            <div class="pane-heading"><h2>Array</h2><span id="phase-tag" class="phase-tag">Ready</span></div>
+            <div class="memory-view">
+              <div id="memory-empty" class="memory-empty"><span aria-hidden="true">[ &nbsp; ]</span><p>Ready when you are.</p><small>Play the sequence, or advance one step at a time.</small></div>
+              <div id="array-container" class="array-container" hidden></div>
+              <div id="old-buffer" class="old-buffer" hidden><div class="buffer-label">Previous array</div><div id="old-slots" class="array-slots old-slots"></div></div>
+            </div>
+            <div class="capacity-area"><div class="capacity-label"><span>Size: <b id="used-label">—</b></span><span>Capacity: <b id="capacity-label">—</b></span></div><p id="capacity-caption">Size is the number of values. Capacity is the space available.</p></div>
+          </div>
 
-      <section id="view-source" class="view" aria-labelledby="source-title" hidden>
-        <div class="document-bar"><h1 id="source-title">Source editor <span>— Read only</span></h1><button data-mode="follow" class="secondary-button" type="button">Return to trace</button></div>
-        <div class="source-layout"><aside class="source-sidebar"><div class="help-tree-title">Project files</div><div id="source-files" class="source-files"></div><div class="source-context"><h3>Current frame</h3><p id="source-context-message">Select a trace frame to locate its source line.</p><button id="reveal-line" class="text-button" type="button" disabled>Go to active line</button></div><p class="source-footnote">Files are read from the running Java project. To edit, change the project files and restart the server.</p></aside><section class="code-panel" aria-label="Java source code"><div class="code-toolbar"><span id="source-filename">Select a source file</span><span id="source-lines">JAVA</span></div><div id="source-error" class="error-message" role="alert" hidden></div><div id="source-code" class="source-code" tabindex="0"><p class="code-empty">Loading project files…</p></div></section></div>
-      </section>
+          <div class="playback-bar" aria-label="Playback controls"><div class="playback-buttons"><button id="play" type="button">Play</button><button id="next" type="button">Next</button><button id="previous" type="button" disabled>Back</button><button id="reset" type="button">Reset</button></div><span class="step-number" id="step-counter" aria-label="Current frame">0 / 0</span></div>
+          <div class="step-panel"><div class="step-heading"><h2 id="step-title">Before execution</h2><span id="operation-label" class="operation-label">initial values</span></div><p id="step-message" class="step-message" aria-live="polite">Press Play to watch the sequence, or Next to see one change.</p><p id="step-explanation" class="step-explanation">The Java program performs each operation. This view shows its recorded steps.</p></div>
+          <div class="code-toggle-row"><button id="toggle-code" type="button" aria-expanded="false" aria-controls="code-panel">Show code</button></div>
+        </section>
+
+        <section id="code-panel" class="code-panel" aria-label="Java source" hidden><div class="code-toolbar"><span id="source-filename">DynamicBuffer.java</span><span id="source-lines">JAVA</span></div><div id="source-error" class="error-message" role="alert" hidden></div><div id="source-code" class="source-code" tabindex="0"><p class="code-empty">Loading source…</p></div><p id="source-reference" class="source-reference">The current step’s source line is highlighted.</p></section>
+      </div>
     </main>
 
-    <footer class="status-bar"><div class="connection-status"><span class="status-dot" id="connection-dot"></span><span id="connection-text">Connecting to Java</span></div><span id="desktop-status">Ready</span><span class="project-credit">Original project · AI assisted</span><span class="resize-grip" aria-hidden="true">▨</span></footer>
+    <footer class="status-bar"><div class="connection-status"><span class="status-dot" id="connection-dot"></span><span id="connection-text">Connecting to Java</span></div><span id="desktop-status">Ready</span></footer>
   </div>
-  <dialog id="about-dialog"><div class="dialog-heading"><h2>About Array Observatory</h2><button id="close-about" class="icon-button" type="button" aria-label="Close about dialog">×</button></div><div class="dialog-body"><div class="about-app-name"><span class="app-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span><strong>Array Observatory</strong></div><p>An independent Java project for exploring generic dynamic arrays, operation costs, and execution traces.</p><p>Includes an original array engine, trace format, local HTTP server, and browser interface. Build chapters connect the source to working experiments.</p><p>Built with AI assistance. No coursework prompts, scaffolds, or solution files are included.</p><button id="about-source" type="button" class="dark-button">Read source</button></div></dialog>
+
+  <dialog id="about-dialog"><div class="dialog-heading"><h2>About Array Observatory</h2><button id="close-about" type="button" aria-label="Close about dialog">×</button></div><div class="dialog-body"><p class="about-name">Array Observatory</p><p>A small Java experiment for seeing how a dynamic array stores values, grows, and moves its contents.</p><p>Original independent project, built with AI assistance. The array operations run in Java; the browser displays their execution steps.</p></div></dialog>
 </body>
 </html>

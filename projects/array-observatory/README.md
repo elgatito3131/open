@@ -17,17 +17,21 @@ Open <http://127.0.0.1:4196>. Stop the server with Ctrl+C. The application uses 
 
 ## Explore
 
-- **Follow execution:** choose a workload, run the real Java engine, and step through the changing array. Compare doubling capacity with growing it by approximately 50%.
-- **Build the project:** follow the layers from storage to operations, trace snapshots, and the web interface.
-- **Read source:** inspect the actual Java files and the lines associated with an execution step.
+- Edit **Initial values** and the **Sequence** of instructions.
+- **Play** prepares the sequence in Java and advances automatically; press **Pause** to stop.
+- **Next** prepares edited inputs when needed and advances one step. **Back** returns one step.
+- **Reset** returns to the initial state while keeping your inputs.
+- **Show code** opens `DynamicBuffer.java` beside the array and highlights the line behind each step.
+
+Editing either input stops playback and clears the previous trace. Press Play or Next to use the new sequence. The operation list and description stay visible in one workspace; About explains the project.
 
 Try starting with `12,27,41`, then append two values. The first append fits. The second needs a larger backing array. Insert into the middle to see a different cost: shifting existing elements.
 
 ## Model and measurements
 
-The backing array starts with four slots and grows only when needed. It does not shrink. Size is the number of logical elements; capacity is the number of allocated slots. Unused slots appear as empty cells. During resizing, both the previous array and the partially populated replacement can be visible.
+The backing array starts with four slots and doubles only when needed. It does not shrink. Size is the number of logical elements; capacity is the number of allocated slots. Unused slots appear as empty cells. During resizing, both the previous array and the partially populated replacement can be visible. The Java engine also supports balanced growth (about 50%) through the API and tests; the simple interface uses doubling.
 
-The displayed counters describe work performed after the initial values are loaded:
+The API trace includes counters for work performed after the initial values are loaded. They are available for source exploration and are omitted from the simple interface:
 
 | Counter | What it counts |
 | --- | --- |
@@ -50,7 +54,7 @@ Browser controls
   -> Java validation and generic dynamic buffer
   -> immutable snapshots of real operations
   -> JSON response
-  -> array view, timeline, counters, and source references
+  -> array view, step description, operation list, and optional Java source pane
 ```
 
 Each request is a separate scenario. No account, database, telemetry, or persistent student data is required. The server exposes only the frontend and an allowlist of this project's Java source files. Inputs are bounded to keep traces small.

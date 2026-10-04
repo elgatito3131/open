@@ -1,6 +1,6 @@
 # Project roadmap
 
-Build one complete, explainable project at a time. Each release needs a working demonstration, reproducible startup, meaningful checks, and the three routes: Build, Follow execution, Read source.
+Build one complete, explainable project at a time. Each release needs a working demonstration, reproducible startup, meaningful checks, and source connected to visible execution. Keep the interface simple; expose detail when requested.
 
 ## Available
 
