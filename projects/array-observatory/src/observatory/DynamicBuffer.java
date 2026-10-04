@@ -101,13 +101,7 @@ public final class DynamicBuffer<E> {
         checkRoom();
         begin("insert " + index + " " + value);
         ensureCapacity();
-        for (int destination = size; destination > index; destination--) {
-            elements[destination] = elements[destination - 1]; // @source insert.shift
-            shifts++;
-            emit("shift", "Move slot " + (destination - 1) + " to slot " + destination
-                    + " to make room. Shift from right to left to preserve values.", null,
-                    List.of(destination - 1, destination), "insert.shift");
-        }
+        openSlot(index);
         elements[index] = value; // @source insert.write
         writes++;
         emit("write", "Write " + value + " into the opening at slot " + index + ".", null,
@@ -121,13 +115,7 @@ public final class DynamicBuffer<E> {
         checkElementIndex(index);
         E removed = get(index);
         begin("remove " + index);
-        for (int destination = index; destination < size - 1; destination++) {
-            elements[destination] = elements[destination + 1]; // @source remove.shift
-            shifts++;
-            emit("shift", "Move slot " + (destination + 1) + " to slot " + destination
-                    + " to close the gap.", null,
-                    List.of(destination, destination + 1), "remove.shift");
-        }
+        closeGap(index);
         elements[size - 1] = null; // @source remove.clear
         emit("clear", "Clear the vacated final slot so the buffer no longer retains its value.",
                 null, List.of(size - 1), "remove.clear");
@@ -159,15 +147,41 @@ public final class DynamicBuffer<E> {
         emit("allocation", "The buffer is full. Allocate " + next
                 + " slots and retain the old " + old.length + " slots while copying.",
                 old, List.of(), "resize.allocate");
-        for (int index = 0; index < size; index++) {
-            elements[index] = old[index]; // @source resize.copy
-            copies++;
-            emit("copy", "Copy old slot " + index + " into new slot " + index + ".",
-                    old, List.of(index), "resize.copy");
-        }
+        copyIntoNewStorage(old);
         old = null; // @source resize.commit
         emit("commit", "Growth complete. Release the old buffer; the new capacity is " + next + ".",
                 old, List.of(), "resize.commit");
+    }
+
+    /** Open a position from the right so values are moved before being overwritten. */
+    private void openSlot(int index) {
+        for (int destination = size; destination > index; destination--) {
+            elements[destination] = elements[destination - 1]; // @source insert.shift
+            shifts++;
+            emit("shift", "Move slot " + (destination - 1) + " to slot " + destination
+                    + " to make room. Shift from right to left to preserve values.", null,
+                    List.of(destination - 1, destination), "insert.shift");
+        }
+    }
+
+    /** Fill a removed position by moving its successors one slot toward the front. */
+    private void closeGap(int index) {
+        for (int destination = index; destination < size - 1; destination++) {
+            elements[destination] = elements[destination + 1]; // @source remove.shift
+            shifts++;
+            emit("shift", "Move slot " + (destination + 1) + " to slot " + destination
+                    + " to close the gap.", null,
+                    List.of(destination, destination + 1), "remove.shift");
+        }
+    }
+
+    private void copyIntoNewStorage(Object[] previousStorage) {
+        for (int index = 0; index < size; index++) {
+            elements[index] = previousStorage[index]; // @source resize.copy
+            copies++;
+            emit("copy", "Copy old slot " + index + " into new slot " + index + ".",
+                    previousStorage, List.of(index), "resize.copy");
+        }
     }
 
     private void begin(String description) {
