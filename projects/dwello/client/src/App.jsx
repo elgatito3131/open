@@ -42,34 +42,51 @@ function HouseMark() {
   return <svg viewBox="0 0 36 36" aria-hidden="true"><path d="M3 17 18 4l15 13M8 14v17h20V14M15 31V20h6v11" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinejoin="round" /><path d="M25 5v6" stroke="currentColor" strokeWidth="2.6" /></svg>;
 }
 
-function Building({ units, selectedId, onSelect }) {
+function Building({ units, property, onSelect }) {
   const floors = [...new Set(units.map((unit) => unit.floor))].sort((a, b) => b - a);
-  const occupied = units.filter((unit) => unit.lease).length;
-  return <section className="building-section" aria-labelledby="building-heading">
-    <div className="section-heading"><span className="section-number">01</span><h2 id="building-heading">The building</h2><span className="quiet">{occupied} of {units.length} occupied</span></div>
-    <p className="section-description">Choose a unit. Its people and paperwork live next door.</p>
-    <div className="building" aria-label="Units by floor">
-      <div className="roof"><span>JUNIPER HOUSE</span><span className="roof-chimney" /></div>
-      <div className="building-floors">
-        {floors.map((floor) => <div className="building-floor" key={floor}>
-          <span className="floor-label" aria-hidden="true">{String(floor).padStart(2, '0')}</span>
-          {units.filter((unit) => unit.floor === floor).sort((a, b) => String(a.number).localeCompare(String(b.number))).map((unit) => <button
+  return <section className="neighborhood" aria-label={`${property.name}. Choose a window to open a unit.`}>
+    <div className="world">
+      <svg className="street-art" viewBox="0 0 1200 640" aria-hidden="true">
+        <defs><pattern id="brick" width="48" height="24" patternUnits="userSpaceOnUse"><path d="M0 0H48M0 12H48M24 0V12M0 12V24M48 12V24" fill="none" stroke="#ba8870" strokeWidth="1" opacity=".5" /></pattern><pattern id="paving" width="80" height="20" patternUnits="userSpaceOnUse"><path d="M0 0H80M40 0V20" stroke="#b8b1a1" fill="none" /></pattern><pattern id="grain" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M1 1h1M5 5h1" stroke="#e2e6ce" opacity=".2" /></pattern></defs>
+        <rect width="1200" height="640" fill="#bfcfc8" /><rect y="386" width="1200" height="140" fill="#aebba1" />
+        <g fill="#e4e4d2"><path d="M81 106h35V94h42V82h54v12h35v24H81z" /><path d="M919 71h24V57h52V43h45v13h34v15h34v17H919z" /></g>
+        <g fill="#97aaa3" stroke="#8a9d96" strokeWidth="2"><path d="M0 300h74v-97h118v160h52v-73h117v215H0z" /><path d="M903 272h78v-71h112v100h107v204H903z" /></g>
+        <g fill="#bac9ba"><path d="M89 225h18v25H89zm42 0h18v25h-18zm0 48h18v25h-18zm-42 0h18v25H89zm188 50h17v26h-17zm37 0h17v26h-17zM998 220h18v27h-18zm42 0h18v27h-18zm-42 48h18v27h-18zm42 0h18v27h-18z" /></g>
+        <path d="M0 515H1200V565H0z" fill="#cac5b4" /><path d="M0 515H1200V565H0z" fill="url(#paving)" /><path d="M0 565H1200V640H0z" fill="#767f79" /><path d="M0 566H1200" stroke="#e3dbc4" strokeWidth="7" /><path d="M0 616H1200" stroke="#c5c1a5" strokeWidth="3" strokeDasharray="42 40" />
+        <path d="M350 539l505-1 58 27H430z" fill="#8d9383" opacity=".4" />
+        <path d="M807 120l52 25v385l-52 12z" fill="#af775f" stroke="#615650" strokeWidth="3" /><path d="M361 126h446v413H361z" fill="#d8ae87" stroke="#615650" strokeWidth="3" /><path d="M361 126h446v413H361z" fill="url(#brick)" />
+        <path d="M346 114l34-33h401l49 33v18H346z" fill="#556c63" stroke="#42574f" strokeWidth="3" /><path d="M830 114l38 21v18l-38-21z" fill="#384e47" /><path d="M346 119h484v13H346z" fill="#708276" />
+        <path d="M704 53h37v36h-37z" fill="#9c6a55" stroke="#615650" strokeWidth="3" /><path d="M699 50h47v9h-47z" fill="#c09978" stroke="#615650" strokeWidth="2" />
+        <path d="M364 259h440M364 385h440" stroke="#a57962" strokeWidth="5" /><path d="M364 262h440M364 388h440" stroke="#ebc69a" strokeWidth="3" />
+        <path d="M350 523h468v12H350zM339 535h490v11H339z" fill="#8f9280" stroke="#696c61" strokeWidth="2" />
+        <g stroke="#716954" strokeWidth="5" fill="none"><path d="M191 515V343m0 62-30-35m30 1 25-31M993 520V365m0 45 31-32m-31 1-25-38" /></g>
+        <g stroke="#637f65" strokeWidth="3" fill="#82986d"><path d="M154 381h-16v-47h15v-26h24v-15h32v15h22v26h17v46h-18v19h-58v-18z" /><path d="M952 374h-12v-41h16v-24h25v-16h37v20h23v25h11v45h-21v15h-56v-24z" /></g>
+        <g fill="#a1b17f"><path d="M150 335h21v-18h28v-13h-17v10h-23v18h-9z" /><path d="M955 338h22v-18h34v-14h-28v11h-19v12h-9z" /></g>
+        <g stroke="#4e6258" strokeWidth="3"><path d="M277 510V364" /><path d="M266 362h23l-4-33h-15z" fill="#efda9b" /><path d="M264 328h28" /></g>
+        <g stroke="#625e4d" strokeWidth="3"><path d="M906 510v-34m-77 34v-34" /><path d="M818 454h98v11h-98zm0 19h98v10h-98z" fill="#b68c60" /></g>
+        <g fill="#779270"><path d="M285 514v-14h14v-10h21v12h16v-16h23v28z" /><path d="M869 517v-18h18v-10h15v10h24v18z" /></g>
+        <g stroke="#6c6755" strokeWidth="3"><path d="M110 550v-77" /><path d="M70 457h116v31H70z" fill="#ece0bf" /></g>
+        <text x="128" y="477" textAnchor="middle" fontFamily="monospace" fontSize="11" fill="#526258">JUNIPER LANE</text>
+        <g transform="translate(1035 530)"><path d="M0 0h60v27H0z" fill="#537779" stroke="#425c5d" strokeWidth="3" /><path d="M12-14h34l12 15H4z" fill="#779c99" stroke="#425c5d" strokeWidth="3" /><path d="M15-10h12V0H9zm17 0h12l9 10H32z" fill="#c9d6c4" /><circle cx="13" cy="28" r="8" fill="#535951" /><circle cx="48" cy="28" r="8" fill="#535951" /><path d="M3 12h7m43 0h7" stroke="#e9ce8d" strokeWidth="4" /></g>
+        <path d="M235 529l8-8 9 9h9l-2 10h-20l-2-7h-8m12-12v-7l7 5" fill="#785b45" stroke="#664d3c" strokeWidth="2" />
+        <rect width="1200" height="640" fill="url(#grain)" pointerEvents="none" />
+      </svg>
+      <h1 className="house-sign">{property.name}</h1>
+      <div className="facade-windows" aria-label="Apartment windows">
+        {floors.flatMap((floor) => units.filter((unit) => unit.floor === floor).sort((a, b) => String(a.number).localeCompare(String(b.number))).map((unit) => <button
             key={unit.id}
-            className={`unit ${unit.lease ? 'occupied' : 'vacant'} ${selectedId === unit.id ? 'selected' : ''}`}
-            aria-pressed={selectedId === unit.id}
+            id={`unit-door-${unit.id}`}
+            className={`apartment-window ${unit.lease ? 'occupied' : 'vacant'}`}
             aria-label={`Unit ${unit.number}, ${unit.lease ? unit.lease.tenant.name : 'vacant'}`}
             onClick={() => onSelect(unit.id)}
           >
-            <span className="unit-topline"><strong>{unit.number}</strong><span className="unit-status">{unit.lease ? 'At home' : 'Available'}</span></span>
-            <span className="room-picture" aria-hidden="true"><span className="room-window"><i /><i /><i /><i /></span><span className="room-door"><i /></span><span className="room-plant"><i /></span></span>
-            <span className="unit-person">{unit.lease?.tenant.name || 'A new beginning'}</span>
-            <span className="unit-meta">{unit.bedrooms} {unit.bedrooms === 1 ? 'bedroom' : 'bedrooms'} · {money(unit.lease?.monthlyRentCents ?? unit.monthlyRentCents)} / mo</span>
-          </button>)}
-        </div>)}
+            <span className="window-frame" aria-hidden="true"><i className="curtain left" /><i className="curtain right" /><i className="window-glow" /><span className="window-number">{unit.number}</span><i className="window-flower" /></span>
+            <span className="nameplate">{unit.lease?.tenant.name || 'To let'}<span className="visit-arrow" aria-hidden="true">↗</span></span>
+          </button>))}
       </div>
-      <div className="building-foundation"><span>← Click a door to open its ledger</span><span>EST. 2026</span></div>
+      <p className="scene-prompt">Click a window. Come on in.</p>
     </div>
-    <div className="building-key"><span><i className="key-occupied" /> Occupied</span><span><i className="key-vacant" /> Available</span><span><i className="key-selected" /> Selected</span></div>
+    <p className="street-address">{property.address}{property.city ? ` · ${property.city}` : ''} <span>A fictional neighborhood. Make yourself at home.</span></p>
   </section>;
 }
 
@@ -112,7 +129,8 @@ function PaymentForm({ lease, month, onSubmit, busy }) {
 function UnitLedger({ unit, month, onLease, onPayment, busy }) {
   const lease = unit.lease;
   return <section className="unit-ledger" aria-labelledby="unit-heading">
-    <div className="section-heading"><span className="section-number">02</span><h2 id="unit-heading">Unit {unit.number}</h2><span className={`ledger-status ${lease ? '' : 'is-vacant'}`}>{lease ? 'Leased' : 'Available'}</span></div>
+    <div className="paper-kicker">JUNIPER HOUSE / {lease ? 'LEASE & RECEIPTS' : 'NEW LEASE'}</div>
+    <div className="section-heading"><h1 id="unit-heading" tabIndex="-1">Unit {unit.number}</h1><span className={`ledger-status ${lease ? '' : 'is-vacant'}`}>{lease ? 'Leased' : 'Available'}</span></div>
     {lease ? <>
       <div className="tenant-heading"><div className="tenant-initial" aria-hidden="true">{lease.tenant.name.charAt(0)}</div><div><h3>{lease.tenant.name}</h3><p>{lease.tenant.email}</p></div></div>
       <dl className="lease-facts"><div><dt>Lease term</dt><dd>{dateLabel(lease.startDate)} — {dateLabel(lease.endDate)}</dd></div><div><dt>Monthly rent</dt><dd>{money(lease.monthlyRentCents)}</dd></div></dl>
@@ -179,6 +197,9 @@ export default function App() {
   const [trace, setTrace] = useState([]);
   const [revision, setRevision] = useState(0);
   const [operation, setOperation] = useState('');
+  const [view, setView] = useState('building');
+  const [traceReturnView, setTraceReturnView] = useState('building');
+  const lastFocusedView = useRef('building');
   const loadSequence = useRef(0);
   const setRecordedTrace = (steps, label) => { setTrace(steps); setRevision((value) => value + 1); setOperation(label); };
 
@@ -195,9 +216,33 @@ export default function App() {
   // trace:client-update:end
 
   useEffect(() => {
+    let cancelled = false;
     setLoading(true); setLedger(null); setError(''); setNotice('');
-    loadLedger().catch((requestError) => { setError(requestError.message); if (requestError.trace) setRecordedTrace(requestError.trace, 'The ledger request failed'); }).finally(() => setLoading(false));
+    loadLedger().catch((requestError) => { if (cancelled) return; setError(requestError.message); if (requestError.trace) setRecordedTrace(requestError.trace, 'The ledger request failed'); }).finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [month]);
+
+  useEffect(() => {
+    if (loading) return;
+    if (view === 'unit') document.getElementById('unit-heading')?.focus({ preventScroll: true });
+    if (view === 'trace') document.getElementById('trace-view-heading')?.focus({ preventScroll: true });
+    if (view === 'building' && lastFocusedView.current !== 'building') document.getElementById(`unit-door-${selectedId}`)?.focus({ preventScroll: true });
+    lastFocusedView.current = view;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [view, loading]);
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key !== 'Escape' || busy || event.defaultPrevented) return;
+      if (view === 'building') return;
+      event.preventDefault();
+      setView(view === 'trace' ? traceReturnView : 'building');
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [view, traceReturnView, busy]);
+
+  function openTrace() { setTraceReturnView(view === 'trace' ? traceReturnView : view); setView('trace'); }
 
   async function mutate(path, body, successMessage) {
     setBusy(true); setError(''); setNotice('');
@@ -224,14 +269,11 @@ export default function App() {
 
   const selectedUnit = ledger?.units.find((unit) => unit.id === selectedId);
   return <>
-    <header className="masthead"><a href="#" className="wordmark" aria-label="Dwello home"><HouseMark /><span>dwello<span className="wordmark-dot">.</span></span></a><span className="masthead-label">THE PROPERTY LEDGER</span><a className="text-link" href="#how-it-works">How it works <span aria-hidden="true">↘</span></a></header>
-    <main>
-      <section className="introduction"><div><p className="eyebrow">A HOME FOR EVERY LITTLE DETAIL</p><h1>Good homes.<br /><em>Clear records.</em></h1></div><div className="intro-note"><span className="note-number">№ 001</span><p>A small building, its people,<br />and the records that connect them.</p><span className="demo-label">Fictional records · Original learning rebuild</span></div></section>
-      <div className="property-bar"><div><span className="property-marker" aria-hidden="true">⌂</span><div><h2>{ledger?.property.name || 'Juniper House'}</h2><p>{ledger ? `${ledger.property.address}${ledger.property.city ? ` · ${ledger.property.city}` : ''}` : 'Opening the property ledger…'}</p></div></div><label className="month-picker">Ledger month<input type="month" aria-label="Ledger month" value={month} onChange={(event) => { if (event.target.value) setMonth(event.target.value); }} disabled={busy || loading} /></label></div>
-      <div className="message-area" aria-live="polite">{error && <div className="message error" role="alert"><strong>Something needs attention.</strong><p>{error}</p><button className="text-button" disabled={busy || loading} onClick={() => { setLoading(true); setError(''); loadLedger().catch((err) => setError(err.message)).finally(() => setLoading(false)); }}>Refresh ledger ↻</button></div>}{notice && <div className="message success"><span aria-hidden="true">✓</span> {notice}<a href="#how-it-works">Follow this request ↘</a></div>}</div>
-      {loading ? <div className="loading-ledger" role="status"><HouseMark /><h2>Opening the ledger…</h2><p>Reading the latest records from PostgreSQL.</p></div> : ledger?.month === month && ledger.units.length ? <div className="ledger-spread" id="building"><Building units={ledger.units} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setNotice(''); }} />{selectedUnit && <UnitLedger unit={selectedUnit} month={month} onLease={(body) => mutate('/api/leases', body, 'A tenant and lease are now on the books.')} onPayment={(body) => mutate('/api/payments', body, 'Payment recorded. The balance is up to date.')} busy={busy || needsRefresh} />}</div> : <div className="loading-ledger"><h2>{ledger ? 'No units in this property yet.' : 'The ledger is waiting.'}</h2><p>{ledger ? 'Add property and unit seed records to explore the building.' : 'The local API and PostgreSQL database need to be running.'}</p></div>}
-      <RequestTrace trace={trace} revision={revision} operation={operation} />
+    <header className="masthead"><button className="wordmark" aria-label="Dwello home" onClick={() => setView('building')}><HouseMark /><span>dwello<span className="wordmark-dot">.</span></span></button><span className="toolbar-place">a little place to call home</span><label className="month-picker"><span>Visit in</span><input type="month" aria-label="Ledger month" value={month} onChange={(event) => { if (event.target.value) setMonth(event.target.value); }} disabled={busy || loading} /></label><button className={`text-link ${view === 'trace' ? 'active' : ''}`} onClick={openTrace}>How it works <span aria-hidden="true">↗</span></button></header>
+    <main className={`app-view view-${view}`}>
+      {view !== 'building' && <div className="view-navigation"><button className="back-button" onClick={() => setView(view === 'trace' ? traceReturnView : 'building')}>← {view === 'trace' && traceReturnView === 'unit' ? `Back to unit ${selectedUnit?.number || ''}` : 'Back to the building'}</button>{view === 'unit' && <span>Take your time. The paperwork’s right here.</span>}{view === 'trace' && <h1 id="trace-view-heading" className="sr-only" tabIndex="-1">How Dwello works</h1>}</div>}
+      <div className="message-area" aria-live="polite">{error && <div className="message error" role="alert"><strong>Something needs attention.</strong><p>{error}</p><button className="text-button" disabled={busy || loading} onClick={() => { setLoading(true); setError(''); loadLedger().catch((err) => setError(err.message)).finally(() => setLoading(false)); }}>Refresh ledger ↻</button></div>}{notice && <div className="message success"><span aria-hidden="true">✓</span> {notice}<button className="text-button" onClick={openTrace}>Follow this request ↗</button></div>}</div>
+      {view === 'trace' ? <RequestTrace trace={trace} revision={revision} operation={operation} /> : loading ? <div className="loading-ledger" role="status"><HouseMark /><h2>Just getting the keys…</h2><p>Opening this month’s records.</p></div> : ledger?.month === month && ledger.units.length ? view === 'building' ? <Building units={ledger.units} property={ledger.property} onSelect={(id) => { setSelectedId(id); setNotice(''); setView('unit'); }} /> : selectedUnit && <div className="paper-desk"><UnitLedger unit={selectedUnit} month={month} onLease={(body) => mutate('/api/leases', body, 'A tenant and lease are now on the books.')} onPayment={(body) => mutate('/api/payments', body, 'Payment recorded. The balance is up to date.')} busy={busy || needsRefresh} /><span className="paper-edge" aria-hidden="true" /></div> : <div className="loading-ledger"><h2>{ledger ? 'No units in this property yet.' : 'The ledger is waiting.'}</h2><p>{ledger ? 'Add property and unit seed records to explore the building.' : 'The local API and PostgreSQL database need to be running.'}</p></div>}
     </main>
-    <footer><a className="footer-brand" href="#">dwello.</a><p>Built to live in. Open to learn from.</p><span>REACT / NODE.JS / POSTGRESQL</span></footer>
   </>;
 }

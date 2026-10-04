@@ -1,6 +1,6 @@
 # Frontier
 
-A research-discovery application: describe an idea, compare keyword and semantic retrieval, and inspect how the results reached the page. The interface is a quiet research index with an open profile beside it and an optional source-and-execution view.
+A research-discovery application: describe an idea, compare keyword and semantic retrieval, and inspect how the results reached the page. The interface is a classic web search directory: a search box, blue result links, visible abstracts, and profiles that expand directly below a result. Search explanations and source are optional.
 
 This is a new, AI-assisted learning rebuild. Its twelve labs, institutions, and research descriptions are fictional. It does not recreate private venture code or establish historical customer or institutional claims.
 
@@ -25,10 +25,10 @@ You can instead supply `FRONTIER_DATABASE_URL` (or `DATABASE_URL`) for your own 
 
 ## Explore
 
-1. Browse the index and select a lab to open its profile.
+1. Browse the subject directory or result list. Select a lab title to expand its profile directly beneath the abstract; select it again or use Close profile to collapse it.
 2. Try a question such as “robots that help people recover movement.” Compare **Keyword** and **Semantic**. Keyword search requires overlapping words; semantic search compares model embeddings with pgvector cosine distance.
 3. Choose a discipline to narrow the candidate set. Filters also apply before semantic ranking.
-4. Open **Follow search** to replay the actual returned query trace. **Show code** displays the allowlisted source behind a step. This replays an already-completed request; it is not a live debugger.
+4. Open **How this search works** to replay the actual returned query trace. **Show code** displays the allowlisted source behind a step. This replays an already-completed request; it is not a live debugger.
 
 Similarity is a relative retrieval score, not a probability or evidence that a fictional lab exists. An unrelated question can still have a nearest neighbor. No language model generates answers or fabricates citations. Profiles identify their original fixture as the source.
 

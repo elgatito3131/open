@@ -1,6 +1,6 @@
 # Dwello — a property ledger you can inspect
 
-An original learning rebuild of a property-management application, using **React, Node.js, Express, and PostgreSQL**. A building cross-section is the main navigation: choose a unit, create a lease, or record a rent receipt. Every successful change is stored in PostgreSQL.
+An original learning rebuild of a property-management application, using **React, Node.js, Express, and PostgreSQL**. Start in an illustrated neighborhood and click an apartment window to open its paperwork. Create a lease or record a rent receipt on a focused ledger page, then return to the building. Every successful change is stored in PostgreSQL.
 
 All seed names, addresses, payments, and organizations are fictional. This is newly written demonstration code, not a recovered historical Dwello product or evidence of earlier business claims.
 
@@ -44,7 +44,7 @@ Then open http://127.0.0.1:4201. Set `DATABASE_URL` first, or source the shared 
 3. Save. React posts to Express; the server validates inputs and commits a tenant and lease in one transaction.
 4. Record a payment for that lease. A receipt appears and its balance changes.
 5. Reload the browser. Both records remain because PostgreSQL stores them.
-6. Open the request explanation and source. Replay the recorded steps and read the SQL and values that actually ran.
+6. Open **How it works** for the request explanation and optional source. Replay the recorded steps and read the SQL and values that actually ran. Return to the same unit or building when finished.
 
 The trace is an explanation of completed server work, not a network packet animation or live debugger. Replaying/resetting the trace does not replay or undo the database change.
 
