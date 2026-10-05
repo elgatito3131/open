@@ -2,6 +2,7 @@ import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { once } from 'node:events';
+import { readFile } from 'node:fs/promises';
 import { createPool } from '../server/db.js';
 import { createApp } from '../server/app.js';
 import { setupDatabase } from '../server/setup.js';
@@ -41,7 +42,114 @@ test('ledger joins six units and stored receipts; setup preserves existing recor
   assert.equal(unit.lease.balanceCents, 75000);
   assert.equal(unit.lease.payments.length, 1);
   await setupDatabase(pool);
-  assert.equal((await pool.query('SELECT count(*)::integer AS n FROM properties')).rows[0].n, 1);
+  assert.equal((await pool.query('SELECT count(*)::integer AS n FROM properties')).rows[0].n, 6);
+});
+
+test('six Virginia cities expose their own fictional six-unit properties', async () => {
+  const response = await request('/api/cities');
+  assert.equal(response.status, 200);
+  const { cities } = response.body.data;
+  assert.deepEqual(cities.map(city => city.name), ['Charlottesville', 'Leesburg', 'Alexandria', 'Richmond', 'Roanoke', 'Winchester']);
+  assert.equal(cities.length, 6);
+  for (const city of cities) {
+    assert.equal(city.state, 'VA');
+    assert.equal(typeof city.latitude, 'number');
+    assert.equal(typeof city.longitude, 'number');
+    assert.equal(city.properties.length, 1);
+    assert.equal(city.properties[0].unitCount, 6);
+    assert.equal(city.properties[0].city, `${city.name}, VA`);
+  }
+  assert.equal(cities[0].properties[0].id, ledger.property.id);
+  assert.ok(response.body.trace.length > 0);
+});
+
+test('explicit property ledger never includes units, leases or receipts from another property', async () => {
+  const cities = (await request('/api/cities')).body.data.cities;
+  const allUnitIds = new Set();
+  const allLeaseIds = new Set();
+  const allReceiptIds = new Set();
+  for (const city of cities) {
+    const property = city.properties[0];
+    const response = await request(`/api/ledger?propertyId=${property.id}&month=2026-10`);
+    assert.equal(response.status, 200);
+    assert.equal(response.body.data.property.id, property.id);
+    assert.equal(response.body.data.property.cityId, city.id);
+    assert.equal(response.body.data.owner, `${property.name} Co.`);
+    assert.equal(response.body.data.units.length, 6);
+    for (const unit of response.body.data.units) {
+      assert.ok(!allUnitIds.has(unit.id)); allUnitIds.add(unit.id);
+      if (unit.lease) {
+        assert.ok(!allLeaseIds.has(unit.lease.id)); allLeaseIds.add(unit.lease.id);
+        for (const receipt of unit.lease.payments) {
+          assert.ok(!allReceiptIds.has(receipt.id)); allReceiptIds.add(receipt.id);
+        }
+      }
+    }
+  }
+  assert.equal(allUnitIds.size, 36);
+  assert.equal(allLeaseIds.size, 24);
+  const implicit = await request('/api/ledger');
+  const explicit = await request(`/api/ledger?propertyId=${ledger.property.id}`);
+  assert.deepEqual(implicit.body.data, explicit.body.data);
+});
+
+test('malformed property IDs reject without silently opening the default property', async () => {
+  for (const value of ['', '0', '-1', '1.5', '1e0', '01', 'NaN', '1 OR 1=1', '2147483648']) {
+    assert.equal((await request(`/api/ledger?propertyId=${encodeURIComponent(value)}`)).status, 400, value);
+  }
+  assert.equal((await request('/api/ledger?propertyId=1&propertyId=2')).status, 400);
+  assert.equal((await request('/api/ledger?propertyId=2147483647')).status, 404);
+  assert.equal((await request('/api/ledger?month=2026-13')).status, 400);
+});
+
+test('legacy migration twice preserves custom tenants, receipts and original IDs without reseeding units', async () => {
+  const legacySchema = `${schema}_legacy`;
+  await admin.query(`CREATE SCHEMA ${legacySchema}`);
+  const legacy = createPool(undefined, { options: `-c search_path=${legacySchema},public` });
+  try {
+    // Reconstruct the prior schema so this exercises ADD COLUMN, not just a
+    // second startup against a database already using the new city columns.
+    const currentSchema = await readFile(new URL('../schema.sql', import.meta.url), 'utf8');
+    const oldSchema = currentSchema
+      .replace(/CREATE TABLE IF NOT EXISTS cities \([\s\S]*?\n\);\n/, '')
+      .replace(/^ALTER TABLE properties .*\n/gm, '')
+      .replace(/^CREATE (?:UNIQUE )?INDEX IF NOT EXISTS properties_(?:seed_key|city)_idx.*\n/gm, '');
+    await legacy.query(oldSchema);
+    const property = (await legacy.query("INSERT INTO properties(name,address,city) VALUES('Juniper House','18 Juniper Lane','Sampletown · fictional') RETURNING id")).rows[0];
+    const custom = (await legacy.query("INSERT INTO properties(name,address,city) VALUES('Saved Custom Place','Original custom address','An unmapped custom city') RETURNING id")).rows[0];
+    const unit = (await legacy.query("INSERT INTO units(property_id,number,floor,bedrooms,monthly_rent_cents) VALUES($1,'102',1,2,170000) RETURNING id", [property.id])).rows[0];
+    // This intentionally collides with a new city's seed email. It must survive
+    // unchanged, rather than being renamed, reused or causing setup to fail.
+    const tenant = (await legacy.query("INSERT INTO tenants(name,email) VALUES('Rowan Saved','dwello.willow-court.101@example.com') RETURNING id")).rows[0];
+    const lease = (await legacy.query("INSERT INTO leases(unit_id,tenant_id,start_date,end_date,monthly_rent_cents) VALUES($1,$2,'2026-10-01','2027-09-30',170000) RETURNING id", [unit.id, tenant.id])).rows[0];
+    await legacy.query("INSERT INTO payments(lease_id,month,amount_cents,paid_on,method,note) VALUES($1,'2026-10-01',42500,'2026-10-04','bank','Keep this receipt')", [lease.id]);
+    const before = {};
+    for (const table of ['units', 'tenants', 'leases', 'payments']) before[table] = (await legacy.query(`SELECT * FROM ${table} ORDER BY id`)).rows;
+    await setupDatabase(legacy);
+    await setupDatabase(legacy);
+    for (const table of ['units', 'tenants', 'leases', 'payments']) {
+      const current = (await legacy.query(`SELECT * FROM ${table} WHERE id = ANY($1::integer[]) ORDER BY id`, [before[table].map(row => row.id)])).rows;
+      assert.deepEqual(current, before[table], `${table} preserved`);
+    }
+    const original = (await legacy.query('SELECT * FROM properties WHERE id=$1', [property.id])).rows[0];
+    assert.equal(original.name, 'Juniper House');
+    assert.equal(original.address, '18 Juniper Lane');
+    assert.equal(original.city, 'Charlottesville, VA');
+    assert.equal(original.seed_key, 'juniper-house');
+    assert.equal((await legacy.query('SELECT count(*)::integer AS n FROM units WHERE property_id=$1', [property.id])).rows[0].n, 1, 'does not fill or reseed existing property');
+    const customAfter = (await legacy.query('SELECT * FROM properties WHERE id=$1', [custom.id])).rows[0];
+    assert.equal(customAfter.name, 'Saved Custom Place');
+    assert.equal(customAfter.address, 'Original custom address');
+    assert.equal(customAfter.city, 'An unmapped custom city');
+    assert.equal(customAfter.city_id, original.city_id, 'unmapped property remains accessible under default city');
+    assert.equal((await legacy.query('SELECT count(*)::integer AS n FROM properties')).rows[0].n, 7);
+    assert.equal((await legacy.query('SELECT count(*)::integer AS n FROM units')).rows[0].n, 31);
+    assert.equal((await legacy.query('SELECT count(*)::integer AS n FROM tenants')).rows[0].n, 21);
+    assert.equal((await legacy.query('SELECT count(*)::integer AS n FROM payments')).rows[0].n, 16);
+  } finally {
+    await legacy.end();
+    await admin.query(`DROP SCHEMA IF EXISTS ${legacySchema} CASCADE`);
+  }
 });
 
 test('lease and tenant commit together and remain visible on a fresh connection', async () => {

@@ -6,7 +6,7 @@ export const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..'
 const allowed = new Map([
   ['schema.sql', 'sql'], ['server/service.js', 'javascript'],
   ['server/app.js', 'javascript'], ['server/validation.js', 'javascript'],
-  ['client/src/App.jsx', 'jsx'],
+  ['client/src/App.jsx', 'jsx'], ['client/src/CityMap.jsx', 'jsx'],
 ]);
 export async function readSource(file) {
   if (!allowed.has(file)) return null;

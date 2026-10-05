@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import CityMap from './CityMap.jsx';
 
 const INITIAL_MONTH = '2026-10';
 const money = (cents) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format((cents || 0) / 100);
@@ -7,6 +8,7 @@ const monthLabel = (month) => new Date(`${month}-01T12:00:00`).toLocaleDateStrin
 const pretty = (value) => typeof value === 'string' ? value : JSON.stringify(value, null, 2);
 const CLIENT_REQUEST_SOURCE = { file: 'client/src/App.jsx', marker: 'client-request' };
 const CLIENT_UPDATE_SOURCE = { file: 'client/src/App.jsx', marker: 'client-update' };
+const CLIENT_CITIES_SOURCE = { file: 'client/src/App.jsx', marker: 'client-cities' };
 
 // These are observed client events, added to the trace returned by the server.
 // Reading or replaying a trace never sends the mutation again.
@@ -66,12 +68,12 @@ function Building({ units, property, onSelect }) {
         <g stroke="#625e4d" strokeWidth="3"><path d="M906 510v-34m-77 34v-34" /><path d="M818 454h98v11h-98zm0 19h98v10h-98z" fill="#b68c60" /></g>
         <g fill="#779270"><path d="M285 514v-14h14v-10h21v12h16v-16h23v28z" /><path d="M869 517v-18h18v-10h15v10h24v18z" /></g>
         <g stroke="#6c6755" strokeWidth="3"><path d="M110 550v-77" /><path d="M70 457h116v31H70z" fill="#ece0bf" /></g>
-        <text x="128" y="477" textAnchor="middle" fontFamily="monospace" fontSize="11" fill="#526258">JUNIPER LANE</text>
+        <text x="128" y="477" textAnchor="middle" fontFamily="monospace" fontSize="9" textLength="100" lengthAdjust="spacingAndGlyphs" fill="#526258">{property.address.replace(/^\d+\s+/, '').toUpperCase()}</text>
         <g transform="translate(1035 530)"><path d="M0 0h60v27H0z" fill="#537779" stroke="#425c5d" strokeWidth="3" /><path d="M12-14h34l12 15H4z" fill="#779c99" stroke="#425c5d" strokeWidth="3" /><path d="M15-10h12V0H9zm17 0h12l9 10H32z" fill="#c9d6c4" /><circle cx="13" cy="28" r="8" fill="#535951" /><circle cx="48" cy="28" r="8" fill="#535951" /><path d="M3 12h7m43 0h7" stroke="#e9ce8d" strokeWidth="4" /></g>
         <path d="M235 529l8-8 9 9h9l-2 10h-20l-2-7h-8m12-12v-7l7 5" fill="#785b45" stroke="#664d3c" strokeWidth="2" />
         <rect width="1200" height="640" fill="url(#grain)" pointerEvents="none" />
       </svg>
-      <h1 className="house-sign">{property.name}</h1>
+      <h1 className="house-sign" id="building-heading" tabIndex="-1">{property.name}</h1>
       <div className="facade-windows" aria-label="Apartment windows">
         {floors.flatMap((floor) => units.filter((unit) => unit.floor === floor).sort((a, b) => String(a.number).localeCompare(String(b.number))).map((unit) => <button
             key={unit.id}
@@ -126,10 +128,10 @@ function PaymentForm({ lease, month, onSubmit, busy }) {
   </form>;
 }
 
-function UnitLedger({ unit, month, onLease, onPayment, busy }) {
+function UnitLedger({ unit, property, month, onLease, onPayment, busy }) {
   const lease = unit.lease;
   return <section className="unit-ledger" aria-labelledby="unit-heading">
-    <div className="paper-kicker">JUNIPER HOUSE / {lease ? 'LEASE & RECEIPTS' : 'NEW LEASE'}</div>
+    <div className="paper-kicker">{property.name.toUpperCase()} / {lease ? 'LEASE & RECEIPTS' : 'NEW LEASE'}</div>
     <div className="section-heading"><h1 id="unit-heading" tabIndex="-1">Unit {unit.number}</h1><span className={`ledger-status ${lease ? '' : 'is-vacant'}`}>{lease ? 'Leased' : 'Available'}</span></div>
     {lease ? <>
       <div className="tenant-heading"><div className="tenant-initial" aria-hidden="true">{lease.tenant.name.charAt(0)}</div><div><h3>{lease.tenant.name}</h3><p>{lease.tenant.email}</p></div></div>
@@ -175,7 +177,7 @@ function RequestTrace({ trace, revision, operation }) {
   const first = Math.max(0, (sourceRange?.startLine || 1) - 4);
   const last = Math.min(sourceLines.length, (sourceRange?.endLine || first + 18) + 3);
   return <section className="request-trace" id="how-it-works" aria-labelledby="trace-heading">
-    <div className="trace-topline"><div><span className="eyebrow">OPEN THE WALLS</span><h2 id="trace-heading">Follow the request.</h2><p>React → Node.js → PostgreSQL → back to your ledger.</p></div><span className="trace-stamp">REAL REQUEST<br />REAL SOURCE</span></div>
+    <div className="trace-topline"><div><span className="eyebrow">OPEN THE WALLS</span><h2 id="trace-heading">Follow the request.</h2><p>React → Node.js → PostgreSQL → back to Dwello.</p></div><span className="trace-stamp">REAL REQUEST<br />REAL SOURCE</span></div>
     <div className="trace-toolbar"><div className="trace-controls"><button className="button play" disabled={!trace.length} onClick={() => { if (index === trace.length - 1) setIndex(0); setPlaying(!playing); }}>{playing ? 'Ⅱ Pause' : '▶ Play'}</button><button className="button" disabled={index === 0} onClick={() => { setPlaying(false); setIndex(index - 1); }}>← Back</button><button className="button" disabled={!trace.length || index === trace.length - 1} onClick={() => { setPlaying(false); setIndex(index + 1); }}>Next →</button><button className="button" disabled={!trace.length} onClick={() => { setPlaying(false); setIndex(0); }}>Reset</button></div><button className={`button source-toggle ${showSource ? 'active' : ''}`} aria-pressed={showSource} onClick={() => setShowSource(!showSource)}>{showSource ? 'Hide source' : 'Show source'} <span aria-hidden="true">{'{ }'}</span></button></div>
     <p className="trace-caption"><span className="request-dot" />{operation || 'Waiting for the first request'}<span>Replay shows recorded steps; it never saves twice.</span></p>
     {step ? <div className={`trace-body ${showSource ? 'with-source' : ''}`}>
@@ -187,9 +189,15 @@ function RequestTrace({ trace, revision, operation }) {
 
 export default function App() {
   const [month, setMonth] = useState(INITIAL_MONTH);
+  const [cities, setCities] = useState([]);
+  const [citiesLoading, setCitiesLoading] = useState(true);
+  const [citiesError, setCitiesError] = useState('');
+  const [selectedCityId, setSelectedCityId] = useState(null);
+  const [propertyId, setPropertyId] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const [ledger, setLedger] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [needsRefresh, setNeedsRefresh] = useState(false);
   const [error, setError] = useState('');
@@ -197,52 +205,84 @@ export default function App() {
   const [trace, setTrace] = useState([]);
   const [revision, setRevision] = useState(0);
   const [operation, setOperation] = useState('');
-  const [view, setView] = useState('building');
-  const [traceReturnView, setTraceReturnView] = useState('building');
-  const lastFocusedView = useRef('building');
+  const [view, setView] = useState('map');
+  const [traceReturnView, setTraceReturnView] = useState('map');
+  const lastFocusedView = useRef('map');
   const loadSequence = useRef(0);
+  const citiesSequence = useRef(0);
   const setRecordedTrace = (steps, label) => { setTrace(steps); setRevision((value) => value + 1); setOperation(label); };
+
+  // trace:client-cities:start
+  async function loadCities() {
+    const sequence = ++citiesSequence.current;
+    setCitiesLoading(true); setCitiesError('');
+    try {
+      const payload = await request('GET', '/api/cities');
+      if (sequence !== citiesSequence.current) return;
+      setCities(payload.data.cities);
+      setSelectedCityId((current) => payload.data.cities.some((city) => city.id === current) ? current : (payload.data.cities.find((city) => city.name === 'Charlottesville') || payload.data.cities[0])?.id);
+      setRecordedTrace([...payload.trace, { label: 'React draws the city map', layer: 'React', detail: `${payload.data.cities.length} Virginia places loaded. Each city points to its own saved property records.`, source: CLIENT_CITIES_SOURCE }], 'GET /api/cities · Virginia');
+    } catch (requestError) {
+      if (sequence !== citiesSequence.current) return;
+      setCitiesError(requestError.message);
+    } finally { if (sequence === citiesSequence.current) setCitiesLoading(false); }
+  }
+  // trace:client-cities:end
+
+  useEffect(() => { loadCities(); return () => { citiesSequence.current += 1; }; }, []);
 
   // trace:client-update:start
   async function loadLedger({ preserveTrace = false } = {}) {
+    if (!propertyId) return;
     const sequence = ++loadSequence.current;
-    const payload = await request('GET', `/api/ledger?month=${month}`);
+    const payload = await request('GET', `/api/ledger?month=${month}&propertyId=${propertyId}`);
     if (sequence !== loadSequence.current) return;
     setLedger(payload.data);
     setNeedsRefresh(false);
     setSelectedId((current) => payload.data.units.some((unit) => unit.id === current) ? current : (payload.data.units.find((unit) => unit.number === '101') || payload.data.units[0])?.id);
-    if (!preserveTrace) setRecordedTrace([...payload.trace, { label: 'React displays the ledger', layer: 'React', detail: `${payload.data.units.length} units loaded from PostgreSQL. Choose one to inspect its lease.`, source: CLIENT_UPDATE_SOURCE }], `GET /api/ledger · ${monthLabel(month)}`);
+    if (!preserveTrace) setRecordedTrace([...payload.trace, { label: 'React displays the ledger', layer: 'React', detail: `${payload.data.units.length} units loaded for ${payload.data.property.name}. The property ID keeps this ledger separate from the other cities.`, source: CLIENT_UPDATE_SOURCE }], `GET /api/ledger · ${payload.data.property.name} · ${monthLabel(month)}`);
   }
   // trace:client-update:end
 
   useEffect(() => {
+    if (!propertyId) return undefined;
     let cancelled = false;
     setLoading(true); setLedger(null); setError(''); setNotice('');
     loadLedger().catch((requestError) => { if (cancelled) return; setError(requestError.message); if (requestError.trace) setRecordedTrace(requestError.trace, 'The ledger request failed'); }).finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  }, [month]);
+    return () => { cancelled = true; loadSequence.current += 1; };
+  }, [month, propertyId, reloadKey]);
 
   useEffect(() => {
-    if (loading) return;
+    if ((view === 'building' || view === 'unit') && (loading || ledger?.month !== month || ledger?.property.id !== propertyId)) return;
     if (view === 'unit') document.getElementById('unit-heading')?.focus({ preventScroll: true });
     if (view === 'trace') document.getElementById('trace-view-heading')?.focus({ preventScroll: true });
-    if (view === 'building' && lastFocusedView.current !== 'building') document.getElementById(`unit-door-${selectedId}`)?.focus({ preventScroll: true });
+    if (view === 'building' && lastFocusedView.current !== 'building') {
+      const target = lastFocusedView.current === 'unit' ? document.getElementById(`unit-door-${selectedId}`) : document.getElementById('building-heading');
+      target?.focus({ preventScroll: true });
+    }
+    if (view === 'map' && lastFocusedView.current !== 'map') (document.getElementById(`city-marker-${selectedCityId}`) || document.getElementById('city-map-heading'))?.focus({ preventScroll: true });
     lastFocusedView.current = view;
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [view, loading]);
 
+  function back() { setView(view === 'trace' ? traceReturnView : view === 'unit' ? 'building' : 'map'); }
   useEffect(() => {
     const handleEscape = (event) => {
-      if (event.key !== 'Escape' || busy || event.defaultPrevented) return;
-      if (view === 'building') return;
-      event.preventDefault();
-      setView(view === 'trace' ? traceReturnView : 'building');
+      if (event.key !== 'Escape' || busy || event.defaultPrevented || view === 'map') return;
+      event.preventDefault(); back();
     };
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
   }, [view, traceReturnView, busy]);
 
   function openTrace() { setTraceReturnView(view === 'trace' ? traceReturnView : view); setView('trace'); }
+  function openProperty(id) {
+    if (busy) return;
+    const city = cities.find((item) => item.properties.some((property) => property.id === id));
+    if (city) setSelectedCityId(city.id);
+    setError(''); setNotice(''); setSelectedId(null); setLedger(null); setLoading(true);
+    setPropertyId(id); setReloadKey((value) => value + 1); setView('building');
+  }
 
   async function mutate(path, body, successMessage) {
     setBusy(true); setError(''); setNotice('');
@@ -253,7 +293,7 @@ export default function App() {
       setRecordedTrace(result.trace, `POST ${path} · saved`);
       try {
         await loadLedger({ preserveTrace: true });
-        setRecordedTrace([...result.trace, { label: 'React refreshes this ledger', layer: 'React', detail: 'The write succeeded. A fresh GET /api/ledger returned the persisted records, and React updated the building and unit details.', source: CLIENT_UPDATE_SOURCE, result: result.data }], `POST ${path} · saved`);
+        setRecordedTrace([...result.trace, { label: 'React refreshes this ledger', layer: 'React', detail: 'The write succeeded. A fresh property-specific request returned the persisted records for this building.', source: CLIENT_UPDATE_SOURCE, result: result.data }], `POST ${path} · saved`);
         setNotice(successMessage);
       } catch (refreshError) {
         setNeedsRefresh(true);
@@ -268,12 +308,15 @@ export default function App() {
   }
 
   const selectedUnit = ledger?.units.find((unit) => unit.id === selectedId);
+  const selectedCity = cities.find((city) => city.id === selectedCityId);
+  const ledgerMatches = ledger?.month === month && ledger?.property.id === propertyId;
+  const backLabel = view === 'trace' ? traceReturnView === 'unit' ? `Back to unit ${selectedUnit?.number || ''}` : traceReturnView === 'building' ? 'Back to the building' : 'Back to the map' : view === 'unit' ? 'Back to the building' : 'Back to the map';
   return <>
-    <header className="masthead"><button className="wordmark" aria-label="Dwello home" onClick={() => setView('building')}><HouseMark /><span>dwello<span className="wordmark-dot">.</span></span></button><span className="toolbar-place">a little place to call home</span><label className="month-picker"><span>Visit in</span><input type="month" aria-label="Ledger month" value={month} onChange={(event) => { if (event.target.value) setMonth(event.target.value); }} disabled={busy || loading} /></label><button className={`text-link ${view === 'trace' ? 'active' : ''}`} onClick={openTrace}>How it works <span aria-hidden="true">↗</span></button></header>
+    <header className={`masthead ${view === 'map' ? 'map-header' : ''}`}><button className="wordmark" aria-label="Dwello home" disabled={busy} onClick={() => setView('map')}><HouseMark /><span>dwello<span className="wordmark-dot">.</span></span></button><span className="toolbar-place">{view === 'map' ? 'a little closer to home · Virginia' : selectedCity?.name || 'Virginia'}</span>{view !== 'map' && <button className="text-link map-shortcut" disabled={busy} onClick={() => setView('map')}>City map</button>}{view !== 'map' && <label className="month-picker"><span>Visit in</span><input type="month" aria-label="Ledger month" value={month} onChange={(event) => { if (event.target.value) setMonth(event.target.value); }} disabled={busy || loading} /></label>}<button className={`text-link how-link ${view === 'trace' ? 'active' : ''}`} disabled={busy} onClick={openTrace}>How it works <span aria-hidden="true">↗</span></button></header>
     <main className={`app-view view-${view}`}>
-      {view !== 'building' && <div className="view-navigation"><button className="back-button" onClick={() => setView(view === 'trace' ? traceReturnView : 'building')}>← {view === 'trace' && traceReturnView === 'unit' ? `Back to unit ${selectedUnit?.number || ''}` : 'Back to the building'}</button>{view === 'unit' && <span>Take your time. The paperwork’s right here.</span>}{view === 'trace' && <h1 id="trace-view-heading" className="sr-only" tabIndex="-1">How Dwello works</h1>}</div>}
-      <div className="message-area" aria-live="polite">{error && <div className="message error" role="alert"><strong>Something needs attention.</strong><p>{error}</p><button className="text-button" disabled={busy || loading} onClick={() => { setLoading(true); setError(''); loadLedger().catch((err) => setError(err.message)).finally(() => setLoading(false)); }}>Refresh ledger ↻</button></div>}{notice && <div className="message success"><span aria-hidden="true">✓</span> {notice}<button className="text-button" onClick={openTrace}>Follow this request ↗</button></div>}</div>
-      {view === 'trace' ? <RequestTrace trace={trace} revision={revision} operation={operation} /> : loading ? <div className="loading-ledger" role="status"><HouseMark /><h2>Just getting the keys…</h2><p>Opening this month’s records.</p></div> : ledger?.month === month && ledger.units.length ? view === 'building' ? <Building units={ledger.units} property={ledger.property} onSelect={(id) => { setSelectedId(id); setNotice(''); setView('unit'); }} /> : selectedUnit && <div className="paper-desk"><UnitLedger unit={selectedUnit} month={month} onLease={(body) => mutate('/api/leases', body, 'A tenant and lease are now on the books.')} onPayment={(body) => mutate('/api/payments', body, 'Payment recorded. The balance is up to date.')} busy={busy || needsRefresh} /><span className="paper-edge" aria-hidden="true" /></div> : <div className="loading-ledger"><h2>{ledger ? 'No units in this property yet.' : 'The ledger is waiting.'}</h2><p>{ledger ? 'Add property and unit seed records to explore the building.' : 'The local API and PostgreSQL database need to be running.'}</p></div>}
+      {view !== 'map' && <div className="view-navigation"><button className="back-button" disabled={busy} onClick={back}>← {backLabel}</button>{view === 'unit' && <span>Take your time. The paperwork’s right here.</span>}{view === 'trace' && <h1 id="trace-view-heading" className="sr-only" tabIndex="-1">How Dwello works</h1>}</div>}
+      {view !== 'map' && <div className="message-area" aria-live="polite">{error && <div className="message error" role="alert"><strong>Something needs attention.</strong><p>{error}</p><button className="text-button" disabled={busy || loading} onClick={() => { setLoading(true); setError(''); setReloadKey((value) => value + 1); }}>Refresh ledger ↻</button></div>}{notice && <div className="message success"><span aria-hidden="true">✓</span> {notice}<button className="text-button" onClick={openTrace}>Follow this request ↗</button></div>}</div>}
+      {view === 'map' ? <CityMap cities={cities} selectedCityId={selectedCityId} onSelectCity={setSelectedCityId} onOpenProperty={openProperty} loading={citiesLoading} error={citiesError} onRetry={loadCities} /> : view === 'trace' ? <RequestTrace trace={trace} revision={revision} operation={operation} /> : loading || !ledgerMatches && !error ? <div className="loading-ledger" role="status"><HouseMark /><h2>Just getting the keys…</h2><p>Opening this month’s records.</p></div> : ledgerMatches && ledger.units.length ? view === 'building' ? <Building units={ledger.units} property={ledger.property} onSelect={(id) => { setSelectedId(id); setNotice(''); setView('unit'); }} /> : selectedUnit && <div className="paper-desk"><UnitLedger unit={selectedUnit} property={ledger.property} month={month} onLease={(body) => mutate('/api/leases', body, 'A tenant and lease are now on the books.')} onPayment={(body) => mutate('/api/payments', body, 'Payment recorded. The balance is up to date.')} busy={busy || needsRefresh} /><span className="paper-edge" aria-hidden="true" /></div> : <div className="loading-ledger"><h2>{ledger ? 'No units in this property yet.' : 'The ledger is waiting.'}</h2><p>{ledger ? 'Add property and unit seed records to explore the building.' : 'Use Refresh ledger to try this property again.'}</p></div>}
     </main>
   </>;
 }

@@ -21,7 +21,7 @@ Requires a JDK supporting Java 17 or later and a POSIX shell. Open <http://127.0
 | --- | --- | --- |
 | [Data Structures Workshop](projects/structure-workshop/README.md) | Java | Runnable; five labs covering generics, arrays, linked lists, trees, hashing, graphs, and heaps |
 | [Array Observatory](projects/array-observatory/README.md) | Java | Original standalone array experiment, preserved on port 4196 |
-| [Dwello](projects/dwello/README.md) | React, Node.js, PostgreSQL | Property ledger with persisted leases, receipts, a building view, and request/source playback |
+| [Dwello](projects/dwello/README.md) | React, Node.js, PostgreSQL | Virginia city map, fictional buildings, persisted leases/receipts, and request/source playback |
 | [Frontier](projects/frontier/README.md) | Next.js, Python, PostgreSQL, pgvector | Fictional research discovery with keyword/semantic search and visible retrieval/source traces |
 
 The labs cover concepts associated with a P0–P4 data-structures sequence. They are independent implementations and examples, not complete school assignments. The workshop documentation identifies which structures are custom and which use Java's standard library.
@@ -32,7 +32,7 @@ The original Array Observatory interface remains available in its own project di
 
 ## Two full-stack applications
 
-**Dwello** turns a fictional building into a working property ledger. Select a unit, create a lease, record a receipt, and follow the actual transaction. **Frontier** explores twelve fictional research labs using a local embedding model and pgvector; compare search modes and inspect the ranking code.
+**Dwello** connects a Virginia city map to six fictional buildings and their property ledgers. Choose a city and a window, create a lease, record a receipt, and follow the actual transaction. **Frontier** explores twelve fictional research labs using a local embedding model and pgvector; compare search modes and inspect the ranking code.
 
 Both are original learning rebuilds. They use real local PostgreSQL storage and synthetic records; neither is a recovery of private business code or evidence of earlier venture claims. Their READMEs explain setup, limitations, and independent learning exercises. The shared [PostgreSQL helper](scripts/postgres.sh) creates an isolated password-protected cluster without enabling a system service.
 

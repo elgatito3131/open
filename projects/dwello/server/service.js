@@ -1,10 +1,23 @@
-import { AppError, month, validateLease, validatePayment } from './validation.js';
+import { AppError, month, propertyId, validateLease, validatePayment } from './validation.js';
 
 export const DEMO_MONTH = '2026-10';
 const missing = (message) => { throw new AppError(404, 'NOT_FOUND', message); };
 
-export async function getLedger(pool, requestedMonth, trace) {
+export async function getCities(pool, trace) {
+  // trace: read-cities
+  const sql = `SELECT c.id, c.name, c.state, c.latitude, c.longitude, c.description,
+    coalesce(json_agg(json_build_object('id', p.id, 'name', p.name, 'address', p.address,
+      'city', p.city, 'unitCount', (SELECT count(*)::integer FROM units u WHERE u.property_id=p.id))
+      ORDER BY p.id) FILTER (WHERE p.id IS NOT NULL), '[]'::json) AS properties
+    FROM cities c LEFT JOIN properties p ON p.city_id=c.id GROUP BY c.id ORDER BY c.id`;
+  const { rows } = await pool.query(sql);
+  await trace.add('Read the Virginia map', 'PostgreSQL', 'Real city locations connect to fictional properties. Unit counts come from saved property relationships.', 'server/service.js', 'read-cities', { sql, parameters: [], result: { citiesReturned: rows.length } });
+  return { cities: rows };
+}
+
+export async function getLedger(pool, requestedMonth, trace, requestedPropertyId) {
   const selectedMonth = month(requestedMonth ?? DEMO_MONTH);
+  const selectedPropertyId = propertyId(requestedPropertyId);
   await trace.add('Read the request', 'API', `Read the property ledger for ${selectedMonth}.`, 'server/service.js', 'read-ledger');
   // trace: read-ledger
   const sql = `SELECT u.id, u.number, u.floor, u.bedrooms, u.monthly_rent_cents,
@@ -20,8 +33,11 @@ export async function getLedger(pool, requestedMonth, trace) {
           'paidOn', paid_on::text, 'method', method, 'note', note) ORDER BY paid_on DESC, id DESC) AS receipts
       FROM payments WHERE lease_id = l.id AND month = $1::date
     ) p ON true WHERE u.property_id = $2 ORDER BY u.floor DESC, u.number`;
-  const property = (await pool.query('SELECT id, name, address, city FROM properties ORDER BY id LIMIT 1')).rows[0];
-  if (!property) missing('No property exists. Run npm run db:setup.');
+  const propertyColumns = 'SELECT id, name, address, city, city_id AS "cityId" FROM properties';
+  const property = selectedPropertyId === undefined
+    ? (await pool.query(`${propertyColumns} ORDER BY id LIMIT 1`)).rows[0]
+    : (await pool.query(`${propertyColumns} WHERE id = $1`, [selectedPropertyId])).rows[0];
+  if (!property) missing(selectedPropertyId === undefined ? 'No property exists. Run npm run db:setup.' : 'That property does not exist.');
   const parameters = [`${selectedMonth}-01`, property.id];
   const { rows } = await pool.query(sql, parameters);
   await trace.add('Join related records', 'PostgreSQL', 'The query joins units, leases, tenants, and receipts for the selected month.', 'server/service.js', 'read-ledger', { sql, parameters, result: { unitsReturned: rows.length } });
@@ -36,7 +52,7 @@ export async function getLedger(pool, requestedMonth, trace) {
     } : null,
   }));
   await trace.add('Return the ledger', 'API', 'Express sends these persisted records as JSON to React.', 'server/app.js', 'get-ledger', { result: { status: 200, units: units.length } });
-  return { month: selectedMonth, owner: 'Juniper House Co.', property, units };
+  return { month: selectedMonth, owner: `${property.name} Co.`, property, units };
 }
 
 export async function createLease(pool, body, trace) {

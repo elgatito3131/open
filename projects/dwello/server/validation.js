@@ -33,6 +33,12 @@ export function month(value) {
   return value;
 }
 
+export function propertyId(value) {
+  if (value === undefined) return undefined;
+  if (typeof value !== 'string' || !/^[1-9]\d*$/.test(value)) invalid('Property ID must be a positive whole number.');
+  return integer(Number(value), 'Property ID', 2_147_483_647);
+}
+
 // trace: validate-lease
 export function validateLease(body) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) invalid('Send a lease object.');

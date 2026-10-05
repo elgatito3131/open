@@ -1,7 +1,7 @@
 import express from 'express';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { createLease, createPayment, getLedger } from './service.js';
+import { createLease, createPayment, getCities, getLedger } from './service.js';
 import { AppError } from './validation.js';
 import { makeTrace, projectRoot, readSource } from './source.js';
 
@@ -42,7 +42,11 @@ export function createApp(pool) {
   });
   // trace: get-ledger
   app.get('/api/ledger', async (req, res) => {
-    const data = await getLedger(pool, req.query.month, req.trace);
+    const data = await getLedger(pool, req.query.month, req.trace, req.query.propertyId);
+    res.json({ data, trace: req.trace.steps });
+  });
+  app.get('/api/cities', async (req, res) => {
+    const data = await getCities(pool, req.trace);
     res.json({ data, trace: req.trace.steps });
   });
   // trace: post-lease

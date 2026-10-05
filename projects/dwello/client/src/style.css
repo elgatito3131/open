@@ -7,3 +7,8 @@
 /* Keep the window hit targets anchored to the cropped street illustration. */
 @media(max-width:680px){.world{--scene-height:max(450px,min(620px,calc(100svh - 130px)));height:var(--scene-height)}.facade-windows{left:calc(50% - var(--scene-height)*.30375);width:calc(var(--scene-height)*.560625)}.house-sign{left:calc(50% - var(--scene-height)*.24375);width:calc(var(--scene-height)*.43125)}}
 @media(max-width:420px){.world{--scene-height:520px}}
+
+/* Map-to-building navigation shares the same quiet toolbar. */
+.map-header .how-link{margin-left:auto}.map-shortcut{margin-left:auto}.map-shortcut+.month-picker{margin-left:0}.view-building .neighborhood{min-height:calc(100svh - 111px)}.view-building .world{width:min(1200px,100%,calc((100svh - 153px)*1.875))}
+@media(max-width:1000px){.view-building .world{width:100%}}
+@media(max-width:680px){.map-shortcut{display:none}.map-shortcut+.month-picker{margin-left:auto}.view-building .neighborhood{min-height:calc(100svh - 102px)}.view-building .world{width:100%}.map-header .toolbar-place{display:none}}

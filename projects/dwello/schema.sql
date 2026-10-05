@@ -1,12 +1,27 @@
 -- Dwello is an original local learning rebuild. All seeded records are fictional.
 CREATE EXTENSION IF NOT EXISTS btree_gist SCHEMA public;
 
+CREATE TABLE IF NOT EXISTS cities (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name text NOT NULL,
+  state text NOT NULL CHECK (state = 'VA'),
+  latitude double precision NOT NULL CHECK (latitude BETWEEN -90 AND 90),
+  longitude double precision NOT NULL CHECK (longitude BETWEEN -180 AND 180),
+  description text NOT NULL,
+  UNIQUE(name, state)
+);
+
 CREATE TABLE IF NOT EXISTS properties (
   id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   name text NOT NULL CHECK (length(name) BETWEEN 1 AND 120),
   address text NOT NULL,
   city text NOT NULL
 );
+-- Additive migration: existing property IDs and every related record survive.
+ALTER TABLE properties ADD COLUMN IF NOT EXISTS city_id integer REFERENCES cities(id);
+ALTER TABLE properties ADD COLUMN IF NOT EXISTS seed_key text;
+CREATE UNIQUE INDEX IF NOT EXISTS properties_seed_key_idx ON properties(seed_key);
+CREATE INDEX IF NOT EXISTS properties_city_idx ON properties(city_id);
 
 CREATE TABLE IF NOT EXISTS units (
   id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
