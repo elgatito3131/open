@@ -1,6 +1,6 @@
 # Frontier
 
-A research-discovery application: describe an idea, compare keyword and semantic retrieval, and inspect how the results reached the page. The interface is a classic web search directory: a search box, blue result links, visible abstracts, and profiles that expand directly below a result. Search explanations and source are optional.
+A research-discovery application: describe an idea, compare keyword and semantic retrieval, and inspect how the results reached the page. A classic Yandex-inspired search interface pairs Frontier's own wordmark with a yellow search bar, a white page, compact result links, and profiles that expand directly below a result. Search explanations and source are optional. This is an independent project, unaffiliated with Yandex.
 
 This is a new, AI-assisted learning rebuild. Its twelve labs, institutions, and research descriptions are fictional. It does not recreate private venture code or establish historical customer or institutional claims.
 
